@@ -1,0 +1,10 @@
+I don't have any background with creating an Android project using Kotlin and Jetpack Compose, but I have many years of software engineering experience in C# and web projects. I am trying to build a cheapo pricelist app that will not connect to a server. I plan to only have a few users, maybe around 10 devices max. The app allows a device to add price data then save it to its local SQLite DB. Of course, the main function of the app is to allow the user to find the prices of products by fuzzy search.  
+
+1 of the devices shall serve as the "master" device. Basically it shall be the server. The other devices shall be normal client devices.
+All devices need to be connected to the local LAN / wifi in order to synchronize the data.
+Client devices need to "download" the latest data from the "master" device it discovers in the LAN network (I am imagining something similar to Chromecast wherein the mobile device can discover TV's that can playback the media).
+In case there is a conflict between the master data and the local data, the client device will be prompted of each conflict and the user needs to decide whether to overwrite local data, overwrite master data, or pend the conflict (do nothing first for the conflict).
+Client devices can also add new price data or update existing data. However, all the changes shall be stored locally first. There will be a tab/page for the client device to push his changes to the "master" device. A similar confluct resolution mechanism shall also be used when pushing changes to the master device. 
+Once a client device pushes data to the master device, the master device's SQLite data shall be updated even midway through his usage. A notification will be shown in the master device when a client pushes new data, to tell the master device user to refresh his data because somebody just pushed new data. 
+All client devices shall poll the master device upon login and every 1 hour to check if there are updates in the master device.
+This is the main gist of the app, I haven't detailed out the individual functions yet. Maybe I will just prompt the detailed specs as we go along.
