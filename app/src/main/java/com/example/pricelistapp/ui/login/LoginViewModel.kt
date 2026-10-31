@@ -16,13 +16,27 @@ enum class LoginMode {
     SELECT_EXISTING
 }
 
+enum class UserRole(val displayName: String) {
+    CLIENT("Client"),
+    MASTER("Master");
+
+    companion object {
+        fun fromString(value: String?): UserRole {
+            return entries.firstOrNull {
+                it.name.equals(value, ignoreCase = true) || it.displayName.equals(value, ignoreCase = true)
+            } ?: CLIENT
+        }
+    }
+}
+
 data class LoginUiState(
-    val mode: LoginMode = LoginMode.CREATE_NEW,
+    val mode: LoginMode = LoginMode.SELECT_EXISTING,
     val newUserName: String = "",
     val selectedUser: User? = null,
     val activeUsers: List<User> = emptyList(),
     val errorMessage: String? = null,
     val loggedInUser: User? = null,
+    val userRole: UserRole = UserRole.CLIENT,
     val isLoading: Boolean = false
 )
 
@@ -34,15 +48,22 @@ class LoginViewModel(private val repository: UserRepository) : ViewModel() {
     init {
         viewModelScope.launch {
             repository.activeUsers.collect { users ->
+                val cache = repository.getLastUsernameRoleCache()
+                val lastUsername = cache?.value
+                val savedRole = UserRole.fromString(cache?.subvalue)
+
+                val matchingUser = users.firstOrNull { it.userName.equals(lastUsername, ignoreCase = true) }
+
                 _uiState.update { state ->
-                    val defaultSelected = if (state.selectedUser != null && users.any { it.id == state.selectedUser.id }) {
-                        state.selectedUser
-                    } else {
-                        users.firstOrNull()
+                    val selected = when {
+                        state.selectedUser != null && users.any { it.id == state.selectedUser.id } -> state.selectedUser
+                        matchingUser != null -> matchingUser
+                        else -> users.firstOrNull()
                     }
                     state.copy(
                         activeUsers = users,
-                        selectedUser = defaultSelected
+                        selectedUser = selected,
+                        userRole = savedRole
                     )
                 }
             }
@@ -61,6 +82,13 @@ class LoginViewModel(private val repository: UserRepository) : ViewModel() {
         _uiState.update { it.copy(selectedUser = user, errorMessage = null) }
     }
 
+    fun onRoleChange(role: UserRole) {
+        _uiState.update { it.copy(userRole = role) }
+        viewModelScope.launch {
+            repository.saveLastLoggedInRole(role.name)
+        }
+    }
+
     fun onSubmit() {
         val currentState = _uiState.value
         viewModelScope.launch {
@@ -70,10 +98,13 @@ class LoginViewModel(private val repository: UserRepository) : ViewModel() {
                     val result = repository.createUser(currentState.newUserName)
                     result.fold(
                         onSuccess = { createdUser ->
+                            val cache = repository.getLastUsernameRoleCache()
+                            val role = UserRole.fromString(cache?.subvalue)
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
                                     loggedInUser = createdUser,
+                                    userRole = role,
                                     newUserName = ""
                                 )
                             }
@@ -99,10 +130,13 @@ class LoginViewModel(private val repository: UserRepository) : ViewModel() {
                         }
                     } else {
                         val loggedIn = repository.loginUser(userToLogin)
+                        val cache = repository.getLastUsernameRoleCache()
+                        val role = UserRole.fromString(cache?.subvalue)
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                loggedInUser = loggedIn
+                                loggedInUser = loggedIn,
+                                userRole = role
                             )
                         }
                     }

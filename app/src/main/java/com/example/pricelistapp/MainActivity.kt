@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         val database = AppDatabase.getInstance(applicationContext)
-        val repository = UserRepository(database.userDao())
+        val repository = UserRepository(database.userDao(), database.deviceCacheDao())
         val viewModelFactory = LoginViewModelFactory(repository)
 
         setContent {
@@ -33,6 +33,8 @@ class MainActivity : ComponentActivity() {
                 if (loggedInUser != null) {
                     MainScreen(
                         user = loggedInUser,
+                        currentRole = uiState.userRole,
+                        onRoleChange = { viewModel.onRoleChange(it) },
                         onLogout = { viewModel.onLogout() }
                     )
                 } else {

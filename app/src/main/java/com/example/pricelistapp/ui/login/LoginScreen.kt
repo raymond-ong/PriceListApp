@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -33,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -87,12 +89,19 @@ fun LoginScreen(
                     Column(modifier = Modifier.padding(16.dp)) {
                         // Mode Selection: Radio buttons or options
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .selectable(
+                                    selected = uiState.mode == LoginMode.CREATE_NEW,
+                                    onClick = { onModeChange(LoginMode.CREATE_NEW) },
+                                    role = Role.RadioButton
+                                )
+                                .padding(vertical = 6.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             RadioButton(
                                 selected = uiState.mode == LoginMode.CREATE_NEW,
-                                onClick = { onModeChange(LoginMode.CREATE_NEW) }
+                                onClick = null
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
@@ -102,12 +111,19 @@ fun LoginScreen(
                         }
 
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .selectable(
+                                    selected = uiState.mode == LoginMode.SELECT_EXISTING,
+                                    onClick = { onModeChange(LoginMode.SELECT_EXISTING) },
+                                    role = Role.RadioButton
+                                )
+                                .padding(vertical = 6.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             RadioButton(
                                 selected = uiState.mode == LoginMode.SELECT_EXISTING,
-                                onClick = { onModeChange(LoginMode.SELECT_EXISTING) }
+                                onClick = null
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
