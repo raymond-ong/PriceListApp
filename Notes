@@ -8,3 +8,39 @@ Client devices can also add new price data or update existing data. However, all
 Once a client device pushes data to the master device, the master device's SQLite data shall be updated even midway through his usage. A notification will be shown in the master device when a client pushes new data, to tell the master device user to refresh his data because somebody just pushed new data. 
 All client devices shall poll the master device upon login and every 1 hour to check if there are updates in the master device.
 This is the main gist of the app, I haven't detailed out the individual functions yet. Maybe I will just prompt the detailed specs as we go along.
+
+
+
+---------
+I am building a pricelist app using Jetpack Compose. So far, there is already a login screen, the app title bar (with username info) and some skeleton code for varios tabs in the main screen. It's also using SQLite and Room to persist data. 
+Let's setup the Add Tab in the MainScreen.
+Let's focus on the UI first.
+Please add the following controls:
+1. Tab's Title Area 
+The title is "Add Product"  
+The entire form can be quite long vertically. 
+If the user starts scrolling down, start collapsing the app title bar as the user starts scrolling down. The app's title bar shall collapse completely if the user scrolls down a lot. Similarly, when the user starts scolling up, start revealing back the app title bar.  
+2. Category Dropdown control that is searchable using fuzzy search.   
+To the right of the Category dropdown, add a plus button for the user to create a new Category. When the user clicks the + button for Category, show a popup form to let the user enter a new category. The popup form shall contain a "Category Name" textbox and 2 buttons: Add and Cancel.
+For now, clicking the buttons do nothing.
+##When the user clicks Add, please validate against the the local SQLite if the Category already exists. 
+3. Product textbox - single line textbox in the sense that user cannot add newline character. If the user types a lot of text, the textbox expands vertically to show the entire text without needing to tackle the cursor. 
+4. Description textbox - multiline textbox that allows user to type a newline character. Can we show single line first, then if the user types many text, expand vertically to show all contents.
+5. Supplier Dropdown
+To the right of the Supplier dropdown, add a plus button for the user to create a new Supplier. When the user clicks the + button for Category, show a popup form to let the user enter a new category. The popup form shall contain a "Supplier Name" textbox and 2 buttons: Add and Cancel.
+For now, clicking the buttons does nothing.
+
+
+5. A button with title "Add Product Variant"
+Clicking the "Add Product Variant" button adds a group form with the following controls:
+a. Variant Name textbox
+Also the same single line textbox behaviour as Product textbox
+b. Supplier Price Numeric textbox, 2 decimal places
+c. Unit
+d. Selling Price Numeric textbox, 2 decimal places
+e. A button with title "Add Custom Price"
+Clicking the button will append another group form at the bottom of the current Variant form with the following controls:
+- Customer Dropdown
+To the right of the Supplier dropdown, add a plus button for the user to create a new Customer. When the user clicks the + button for Category, show a popup form to let the user enter a new category. The popup form shall contain a "Customer Name" textbox and 2 buttons: Add and Cancel.
+For now, clicking the buttons does nothing.
+- Price numeric textbox, 2 decimal places

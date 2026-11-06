@@ -45,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -73,11 +74,14 @@ fun MainScreen(
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
     var selectedTab by remember { mutableStateOf(MainTab.SEARCH) }
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
                 title = { Text("Price List") },
+                scrollBehavior = scrollBehavior,
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -326,6 +330,7 @@ fun ProductTabContent(user: User, currentRole: UserRole) {
     }
 }
 
+/*
 @Composable
 fun AddTabContent(user: User, currentRole: UserRole) {
     Card(
@@ -353,6 +358,7 @@ fun AddTabContent(user: User, currentRole: UserRole) {
         }
     }
 }
+ */
 
 @Composable
 fun SettingsTabContent(user: User, currentRole: UserRole) {
