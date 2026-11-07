@@ -1,17 +1,17 @@
 package com.example.pricelistapp.ui.main
 
 import android.app.Application
-import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pricelistapp.data.local.*
+import com.example.pricelistapp.ui.util.ToastHelper
+import com.example.pricelistapp.ui.util.ToastType
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 
 data class CustomPriceFormState(
     val id: String = java.util.UUID.randomUUID().toString(),
@@ -158,53 +158,53 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
     suspend fun addCategoryToDb(name: String): Result<CategoryEntity> {
         val trimmed = name.trim()
         if (trimmed.isEmpty()) {
-            Toast.makeText(getApplication(), "Category name cannot be empty", Toast.LENGTH_SHORT).show()
+            ToastHelper.show(getApplication(), "Category name cannot be empty", ToastType.WARNING)
             return Result.failure(IllegalArgumentException("Category name cannot be empty."))
         }
         val existing = categoryDao.findCategoryByName(trimmed)
         if (existing != null) {
-            Toast.makeText(getApplication(), "Category '$trimmed' already exists", Toast.LENGTH_SHORT).show()
+            ToastHelper.show(getApplication(), "Category '$trimmed' already exists", ToastType.ERROR)
             return Result.failure(IllegalArgumentException("Category '$trimmed' already exists."))
         }
         val entity = CategoryEntity(name = trimmed)
         categoryDao.insertCategory(entity)
         selectedCategory = entity
-        Toast.makeText(getApplication(), "Category saved successfully", Toast.LENGTH_SHORT).show()
+        ToastHelper.show(getApplication(), "Category saved successfully", ToastType.SUCCESS)
         return Result.success(entity)
     }
 
     suspend fun addSupplierToDb(name: String): Result<SupplierEntity> {
         val trimmed = name.trim()
         if (trimmed.isEmpty()) {
-            Toast.makeText(getApplication(), "Supplier name cannot be empty", Toast.LENGTH_SHORT).show()
+            ToastHelper.show(getApplication(), "Supplier name cannot be empty", ToastType.WARNING)
             return Result.failure(IllegalArgumentException("Supplier name cannot be empty."))
         }
         val existing = supplierDao.findSupplierByName(trimmed)
         if (existing != null) {
-            Toast.makeText(getApplication(), "Supplier '$trimmed' already exists", Toast.LENGTH_SHORT).show()
+            ToastHelper.show(getApplication(), "Supplier '$trimmed' already exists", ToastType.ERROR)
             return Result.failure(IllegalArgumentException("Supplier '$trimmed' already exists."))
         }
         val entity = SupplierEntity(name = trimmed)
         supplierDao.insertSupplier(entity)
         selectedSupplier = entity
-        Toast.makeText(getApplication(), "Supplier saved successfully", Toast.LENGTH_SHORT).show()
+        ToastHelper.show(getApplication(), "Supplier saved successfully", ToastType.SUCCESS)
         return Result.success(entity)
     }
 
     suspend fun addCustomerToDb(name: String): Result<CustomerEntity> {
         val trimmed = name.trim()
         if (trimmed.isEmpty()) {
-            Toast.makeText(getApplication(), "Customer name cannot be empty", Toast.LENGTH_SHORT).show()
+            ToastHelper.show(getApplication(), "Customer name cannot be empty", ToastType.WARNING)
             return Result.failure(IllegalArgumentException("Customer name cannot be empty."))
         }
         val existing = customerDao.findCustomerByName(trimmed)
         if (existing != null) {
-            Toast.makeText(getApplication(), "Customer '$trimmed' already exists", Toast.LENGTH_SHORT).show()
+            ToastHelper.show(getApplication(), "Customer '$trimmed' already exists", ToastType.ERROR)
             return Result.failure(IllegalArgumentException("Customer '$trimmed' already exists."))
         }
         val entity = CustomerEntity(name = trimmed)
         customerDao.insertCustomer(entity)
-        Toast.makeText(getApplication(), "Customer saved successfully", Toast.LENGTH_SHORT).show()
+        ToastHelper.show(getApplication(), "Customer saved successfully", ToastType.SUCCESS)
         return Result.success(entity)
     }
 
@@ -223,11 +223,11 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
     suspend fun saveProduct(userId: String): Result<Unit> {
         val trimmedName = productName.trim()
         if (trimmedName.isEmpty()) {
-            Toast.makeText(getApplication(), "Product name cannot be empty", Toast.LENGTH_SHORT).show()
+            ToastHelper.show(getApplication(), "Product name cannot be empty", ToastType.WARNING)
             return Result.failure(IllegalArgumentException("Product name cannot be empty"))
         }
         if (selectedCategory == null) {
-            Toast.makeText(getApplication(), "Please select a category", Toast.LENGTH_SHORT).show()
+            ToastHelper.show(getApplication(), "Please select a category", ToastType.WARNING)
             return Result.failure(IllegalArgumentException("Please select a category"))
         }
 
@@ -273,11 +273,11 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
 
-            Toast.makeText(getApplication(), "Product saved successfully!", Toast.LENGTH_SHORT).show()
+            ToastHelper.show(getApplication(), "Product saved successfully!", ToastType.SUCCESS)
             clearForm()
             return Result.success(Unit)
         } catch (e: Exception) {
-            Toast.makeText(getApplication(), "Failed to save product: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+            ToastHelper.show(getApplication(), "Failed to save product: ${e.localizedMessage}", ToastType.ERROR)
             return Result.failure(e)
         }
     }
