@@ -1,0 +1,46 @@
+[users]
+- id (guid)
+- user_name (text)
+- last_login_date
+- is_deleted
+
+[categories]
+- id (ulid)
+- name (text)
+- description
+
+[suppliers]
+- id (ulid)
+- name
+- address
+- contact_num (text)
+- notes
+
+[customers]
+- id (ulid)
+- name
+- address
+- contact_num (text)
+- notes
+
+[product]
+- id (ulid)
+- name
+- description
+- cat_id
+- supplier_id
+
+[supplier_price_hist]
+- id (ulid)
+- user_id
+- date
+- variant_id
+
+[customer_price_hist]
+- id (ulid)
+- user_id
+- date
+- variant_id
+- customer_id
+- is_deleted
+- is_default_price

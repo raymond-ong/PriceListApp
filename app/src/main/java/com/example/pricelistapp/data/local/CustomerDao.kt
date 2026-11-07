@@ -11,9 +11,12 @@ interface CustomerDao {
     @Query("SELECT * FROM customers ORDER BY name ASC")
     fun getAllCustomers(): Flow<List<CustomerEntity>>
 
+    @Query("SELECT * FROM customers ORDER BY id DESC LIMIT 5")
+    suspend fun getRecentCustomers(): List<CustomerEntity>
+
     @Query("SELECT * FROM customers WHERE LOWER(name) = LOWER(:name) LIMIT 1")
     suspend fun findCustomerByName(name: String): CustomerEntity?
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insertCustomer(customer: CustomerEntity): Long
+    suspend fun insertCustomer(customer: CustomerEntity)
 }

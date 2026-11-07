@@ -1,3 +1,4 @@
+[0]  Overview
 I don't have any background with creating an Android project using Kotlin and Jetpack Compose, but I have many years of software engineering experience in C# and web projects. I am trying to build a cheapo pricelist app that will not connect to a server. I plan to only have a few users, maybe around 10 devices max. The app allows a device to add price data then save it to its local SQLite DB. Of course, the main function of the app is to allow the user to find the prices of products by fuzzy search.  
 
 1 of the devices shall serve as the "master" device. Basically it shall be the server. The other devices shall be normal client devices.
@@ -9,8 +10,9 @@ Once a client device pushes data to the master device, the master device's SQLit
 All client devices shall poll the master device upon login and every 1 hour to check if there are updates in the master device.
 This is the main gist of the app, I haven't detailed out the individual functions yet. Maybe I will just prompt the detailed specs as we go along.
 
+[1] Shell
 
-
+[2] Add Product Tab
 ---------
 I am building a pricelist app using Jetpack Compose. So far, there is already a login screen, the app title bar (with username info) and some skeleton code for varios tabs in the main screen. It's also using SQLite and Room to persist data. 
 Let's setup the Add Tab in the MainScreen.
@@ -44,3 +46,93 @@ Clicking the button will append another group form at the bottom of the current 
 To the right of the Supplier dropdown, add a plus button for the user to create a new Customer. When the user clicks the + button for Category, show a popup form to let the user enter a new category. The popup form shall contain a "Customer Name" textbox and 2 buttons: Add and Cancel.
 For now, clicking the buttons does nothing.
 - Price numeric textbox, 2 decimal places
+
+[3] Initial DB for Products
+Now that you have created the UI, let's setup the actual Save function for the Add-Product Tab.
+1. Please add a Clear Button and a Save Button at the bottom of the page. The Clear Button will be on the left, while the Save button will be on the right.
+2. Clicking the Save button saves the product to the SQLite Database.
+3. Same for the Supplier Dialog and Customer Dialog: If the user clicks OK after filling up the Supplier Name, do a validation that the Supplier/Customer Name is not empty. Also ensure that there is not existing supplier or customer exists in the database with the same name. Popup a toast notification to show the error. If everything is OK, go ahead and save it to the database.
+4. Since the database is now wired up, during the app's initial load (e.g. after logging in), please load the customer and supplier list from the database, then save it to either the parent navigation tab control's view model or store it in a global viewmodel. Later on, other tabs will also need the customer and supplier list, so I plan to share the list across different tabs.
+The fuzzy search for Customer and Supplier Name must now work/be testable.
+Going back to #3 above, if a new supplier or customer is added to the database, please update the viewmodel to add the new customer or supplier. Show a toast notification also that Save was successful, just to inform the user.
+5. I want to discuss how the customer or supplier dialog works after being wired up to the database.
+Right now, when the dropdown is clicked, you are popping up a new dialog.
+The dialog contains a textbox for fuzzy search input.
+Below it I presume is a place for listing the fuzzy search result.
+This is my desired behavior:
+- When the dialog is shown, set the focus on the fuzzy search textbox such that they on screen keyboard will be activated already, ready for the user to type. 
+For the search result, if the fuzzy search textbox is still empty, show the last 5 customers or suppliers added into the database. I assume the user has a high likelihood to choose from the last few newly added customers/suppliers.
+- When the user starts typing in the fuzzy search textbox, you can wait for 500ms until the user stops typing then do the actual fuzzy search (similar to the debounce function in underscore JS)
+- If there is no search result on what the user typed, dynamically display a link or button with title 'add "__" to the Database?'. Clicking the button or link shall save the customer or supplier to the database, then close the dialog. The customer or supplier dropdown in the Add Product form shall have the value of the newly added customer or supplier.
+
+6. Other UI requests for the tab navigation control: For the bottom navigation controls, right now the highlight for the currently selected tab is a very faint bluish color. Can you make it more obvious and give a bolder highlight color?
+
+7. Database Schema: I am listing a suggested schema below, including updates to the past DB schema you already created. I basically renamed the tables/column to not use camel-case, instead use all lower case and underscores.
+
+For the id columns, I also want to use ulid instead of a full blown guid to conserve a bit of storage space, and I like the fact the ulid's first few characters is just the current date.
+
+The tables may have extra columns that it not currently present in the Add Product Tab UI. It's OK, we'll get to those fields next time in other tabs. For now, you can create the field first.
+
+[users]
+- id (guid)
+- user_name (text)
+- last_login_date
+- is_deleted
+
+[categories]
+- id (ulid)
+- name (text)
+- description
+
+[suppliers]
+- id (ulid)
+- name
+- address
+- contact_num (text)
+- notes
+
+[customers]
+- id (ulid)
+- name
+- address
+- contact_num (text)
+- notes
+
+[product]
+- id (ulid)
+- name
+- description
+- cat_id
+- supplier_id
+
+[supplier_price_hist]
+- id (ulid)
+- user_id
+- date
+- variant_id
+
+[customer_price_hist]
+- id (ulid)
+- user_id
+- date
+- variant_id
+- customer_id
+- is_deleted
+- is_default_price
+
+[3a]
+So far so good. I missed out a few points. 
+1. Please make the Category dropdown/fuzzy search dialog behave the same way as the customer and supplier dropdown/dialog.
+It should list the 5 most recent categories when the fuzzy search textbox is still empty.
+It should also give the user the option to add the category to the database.
+
+2. For the "Add __ to the database?" link in the Category/Customer/Supplier dialog, please make the "A" in "add" uppercase.
+Also, the link is not very obviously clickable. Can you add a green plus/+ icon on the left. Add the circular + icon ("Add circle" icon from material icons).
+
+3. For the "Add Variant" button, I think after adding the Clear and Save Button, the "Add Variant" button is too big.
+Can you make it a link also with the green circular plus icon instead of a full button?
+
+4. For the fuzzy search result or recent category/supplier/customer, I think the current UI is too boring. Can you add a light colored outline and some rounded corner to make it look like a card that can be clickable?
+
+[3b]
+For the Add Product Variant link, can you align it to the left instead of being centered?

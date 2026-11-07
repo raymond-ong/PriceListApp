@@ -9,14 +9,14 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
-    @Query("SELECT * FROM users WHERE isDeleted = 0 ORDER BY lastLoginDate DESC")
+    @Query("SELECT * FROM users WHERE is_deleted = 0 ORDER BY last_login_date DESC")
     fun getAllActiveUsers(): Flow<List<User>>
 
-    @Query("SELECT * FROM users WHERE LOWER(userName) = LOWER(:userName) AND isDeleted = 0 LIMIT 1")
+    @Query("SELECT * FROM users WHERE LOWER(user_name) = LOWER(:userName) AND is_deleted = 0 LIMIT 1")
     suspend fun findUserByName(userName: String): User?
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insertUser(user: User): Long
+    suspend fun insertUser(user: User)
 
     @Update
     suspend fun updateUser(user: User)

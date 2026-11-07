@@ -31,8 +31,8 @@ class UserRepository(
             userName = trimmed,
             lastLoginDate = System.currentTimeMillis()
         )
-        val generatedId = userDao.insertUser(newUser)
-        val createdUser = newUser.copy(id = generatedId)
+        userDao.insertUser(newUser)
+        val createdUser = newUser
         saveLastLoggedInUser(createdUser.userName)
         return Result.success(createdUser)
     }

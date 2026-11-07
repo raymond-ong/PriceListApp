@@ -1,18 +1,17 @@
 package com.example.pricelistapp.ui.main
 
 import android.app.Application
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.pricelistapp.data.local.AppDatabase
-import com.example.pricelistapp.data.local.CategoryEntity
-import com.example.pricelistapp.data.local.CustomerEntity
-import com.example.pricelistapp.data.local.SupplierEntity
+import com.example.pricelistapp.data.local.*
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 data class CustomPriceFormState(
     val id: String = java.util.UUID.randomUUID().toString(),
@@ -34,6 +33,7 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
     private val categoryDao = database.categoryDao()
     private val supplierDao = database.supplierDao()
     private val customerDao = database.customerDao()
+    private val productDao = database.productDao()
 
     val categories: StateFlow<List<CategoryEntity>> = categoryDao.getAllCategories()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
@@ -60,12 +60,19 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
     var variants by mutableStateOf<List<ProductVariantFormState>>(emptyList())
         private set
 
+    fun clearForm() {
+        selectedCategory = null
+        productName = ""
+        description = ""
+        selectedSupplier = null
+        variants = emptyList()
+    }
+
     fun updateSelectedCategory(category: CategoryEntity?) {
         selectedCategory = category
     }
 
     fun updateProductName(name: String) {
-        // Single line behavior: remove any newline characters
         productName = name.replace("\n", "").replace("\r", "")
     }
 
@@ -151,46 +158,127 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
     suspend fun addCategoryToDb(name: String): Result<CategoryEntity> {
         val trimmed = name.trim()
         if (trimmed.isEmpty()) {
+            Toast.makeText(getApplication(), "Category name cannot be empty", Toast.LENGTH_SHORT).show()
             return Result.failure(IllegalArgumentException("Category name cannot be empty."))
         }
         val existing = categoryDao.findCategoryByName(trimmed)
         if (existing != null) {
+            Toast.makeText(getApplication(), "Category '$trimmed' already exists", Toast.LENGTH_SHORT).show()
             return Result.failure(IllegalArgumentException("Category '$trimmed' already exists."))
         }
         val entity = CategoryEntity(name = trimmed)
-        val id = categoryDao.insertCategory(entity)
-        val created = entity.copy(id = id)
-        selectedCategory = created
-        return Result.success(created)
+        categoryDao.insertCategory(entity)
+        selectedCategory = entity
+        Toast.makeText(getApplication(), "Category saved successfully", Toast.LENGTH_SHORT).show()
+        return Result.success(entity)
     }
 
     suspend fun addSupplierToDb(name: String): Result<SupplierEntity> {
         val trimmed = name.trim()
         if (trimmed.isEmpty()) {
+            Toast.makeText(getApplication(), "Supplier name cannot be empty", Toast.LENGTH_SHORT).show()
             return Result.failure(IllegalArgumentException("Supplier name cannot be empty."))
         }
         val existing = supplierDao.findSupplierByName(trimmed)
         if (existing != null) {
+            Toast.makeText(getApplication(), "Supplier '$trimmed' already exists", Toast.LENGTH_SHORT).show()
             return Result.failure(IllegalArgumentException("Supplier '$trimmed' already exists."))
         }
         val entity = SupplierEntity(name = trimmed)
-        val id = supplierDao.insertSupplier(entity)
-        val created = entity.copy(id = id)
-        selectedSupplier = created
-        return Result.success(created)
+        supplierDao.insertSupplier(entity)
+        selectedSupplier = entity
+        Toast.makeText(getApplication(), "Supplier saved successfully", Toast.LENGTH_SHORT).show()
+        return Result.success(entity)
     }
 
     suspend fun addCustomerToDb(name: String): Result<CustomerEntity> {
         val trimmed = name.trim()
         if (trimmed.isEmpty()) {
+            Toast.makeText(getApplication(), "Customer name cannot be empty", Toast.LENGTH_SHORT).show()
             return Result.failure(IllegalArgumentException("Customer name cannot be empty."))
         }
         val existing = customerDao.findCustomerByName(trimmed)
         if (existing != null) {
+            Toast.makeText(getApplication(), "Customer '$trimmed' already exists", Toast.LENGTH_SHORT).show()
             return Result.failure(IllegalArgumentException("Customer '$trimmed' already exists."))
         }
         val entity = CustomerEntity(name = trimmed)
-        val id = customerDao.insertCustomer(entity)
-        return Result.success(entity.copy(id = id))
+        customerDao.insertCustomer(entity)
+        Toast.makeText(getApplication(), "Customer saved successfully", Toast.LENGTH_SHORT).show()
+        return Result.success(entity)
+    }
+
+    suspend fun getRecentCategories(): List<CategoryEntity> {
+        return categoryDao.getRecentCategories()
+    }
+
+    suspend fun getRecentSuppliers(): List<SupplierEntity> {
+        return supplierDao.getRecentSuppliers()
+    }
+
+    suspend fun getRecentCustomers(): List<CustomerEntity> {
+        return customerDao.getRecentCustomers()
+    }
+
+    suspend fun saveProduct(userId: String): Result<Unit> {
+        val trimmedName = productName.trim()
+        if (trimmedName.isEmpty()) {
+            Toast.makeText(getApplication(), "Product name cannot be empty", Toast.LENGTH_SHORT).show()
+            return Result.failure(IllegalArgumentException("Product name cannot be empty"))
+        }
+        if (selectedCategory == null) {
+            Toast.makeText(getApplication(), "Please select a category", Toast.LENGTH_SHORT).show()
+            return Result.failure(IllegalArgumentException("Please select a category"))
+        }
+
+        try {
+            val productEntity = ProductEntity(
+                name = trimmedName,
+                description = description.ifBlank { null },
+                catId = selectedCategory!!.id,
+                supplierId = selectedSupplier?.id ?: ""
+            )
+            productDao.insertProduct(productEntity)
+
+            val now = System.currentTimeMillis()
+            for (v in variants) {
+                val variantEntity = ProductVariantEntity(
+                    productId = productEntity.id,
+                    name = v.variantName.ifBlank { trimmedName },
+                    supplierPrice = v.supplierPrice.toDoubleOrNull() ?: 0.0,
+                    unit = v.unit.ifBlank { "pcs" },
+                    sellingPrice = v.sellingPrice.toDoubleOrNull() ?: 0.0
+                )
+                productDao.insertVariant(variantEntity)
+
+                val supHist = SupplierPriceHistEntity(
+                    userId = userId,
+                    date = now,
+                    variantId = variantEntity.id
+                )
+                productDao.insertSupplierPriceHist(supHist)
+
+                for (cp in v.customPrices) {
+                    if (cp.customer != null && cp.price.isNotBlank()) {
+                        val custHist = CustomerPriceHistEntity(
+                            userId = userId,
+                            date = now,
+                            variantId = variantEntity.id,
+                            customerId = cp.customer.id,
+                            isDeleted = 0,
+                            isDefaultPrice = 0
+                        )
+                        productDao.insertCustomerPriceHist(custHist)
+                    }
+                }
+            }
+
+            Toast.makeText(getApplication(), "Product saved successfully!", Toast.LENGTH_SHORT).show()
+            clearForm()
+            return Result.success(Unit)
+        } catch (e: Exception) {
+            Toast.makeText(getApplication(), "Failed to save product: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+            return Result.failure(e)
+        }
     }
 }

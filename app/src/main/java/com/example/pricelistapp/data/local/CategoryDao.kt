@@ -11,9 +11,12 @@ interface CategoryDao {
     @Query("SELECT * FROM categories ORDER BY name ASC")
     fun getAllCategories(): Flow<List<CategoryEntity>>
 
+    @Query("SELECT * FROM categories ORDER BY id DESC LIMIT 5")
+    suspend fun getRecentCategories(): List<CategoryEntity>
+
     @Query("SELECT * FROM categories WHERE LOWER(name) = LOWER(:name) LIMIT 1")
     suspend fun findCategoryByName(name: String): CategoryEntity?
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insertCategory(category: CategoryEntity): Long
+    suspend fun insertCategory(category: CategoryEntity)
 }

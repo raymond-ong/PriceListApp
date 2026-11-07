@@ -9,7 +9,8 @@ import androidx.room.PrimaryKey
     indices = [Index(value = ["name"], unique = true)]
 )
 data class CategoryEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
-    val name: String
+    @PrimaryKey
+    val id: String = UlidGenerator.generate(),
+    val name: String,
+    val description: String? = null
 )
