@@ -13,5 +13,7 @@ data class ProductEntity(
     @ColumnInfo(name = "cat_id")
     val catId: String,
     @ColumnInfo(name = "supplier_id")
-    val supplierId: String
+    val supplierId: String,
+    @ColumnInfo(name = "last_modified_date")
+    val lastModifiedDate: Long = System.currentTimeMillis()
 )

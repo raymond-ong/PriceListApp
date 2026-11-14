@@ -236,7 +236,8 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
                 name = trimmedName,
                 description = description.ifBlank { null },
                 catId = selectedCategory!!.id,
-                supplierId = selectedSupplier?.id ?: ""
+                supplierId = selectedSupplier?.id ?: "",
+                lastModifiedDate = System.currentTimeMillis()
             )
             productDao.insertProduct(productEntity)
 

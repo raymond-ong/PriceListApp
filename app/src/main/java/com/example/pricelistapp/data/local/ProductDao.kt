@@ -3,6 +3,8 @@ package com.example.pricelistapp.data.local
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
 
 @Dao
 interface ProductDao {
@@ -17,4 +19,8 @@ interface ProductDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCustomerPriceHist(hist: CustomerPriceHistEntity)
+
+    @Transaction
+    @Query("SELECT * FROM product")
+    suspend fun getAllProductsWithVariants(): List<ProductWithVariants>
 }

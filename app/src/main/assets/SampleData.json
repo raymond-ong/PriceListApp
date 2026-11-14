@@ -1,0 +1,1127 @@
+[
+  {
+    "Product Category": "Paint",
+    "Product Name": "Boysen Acrytex",
+    "Product Description": "Water-based acrylic latex paint for interior and exterior walls",
+    "Product Supplier": "Boysen Philippines Inc.",
+    "Variants": [
+      {
+        "Variant Name": "1L",
+        "Supplier Price": 420.00,
+        "Selling Price": 520.00,
+        "Custom Pricing": [
+          { "Customer Name": "ABC Construction", "Custom Price": 490.00 }
+        ]
+      },
+      {
+        "Variant Name": "4L",
+        "Supplier Price": 1580.00,
+        "Selling Price": 1850.00,
+        "Custom Pricing": []
+      },
+      {
+        "Variant Name": "16L",
+        "Supplier Price": 5980.00,
+        "Selling Price": 6800.00,
+        "Custom Pricing": [
+          { "Customer Name": "BuildRight Corp.", "Custom Price": 6500.00 }
+        ]
+      }
+    ]
+  },
+  {
+    "Product Category": "Paint",
+    "Product Name": "Boysen Permacoat",
+    "Product Description": "Acrylic emulsion paint for interior and exterior use",
+    "Product Supplier": "Boysen Philippines Inc.",
+    "Variants": [
+      { "Variant Name": "1L", "Supplier Price": 380.00, "Selling Price": 470.00, "Custom Pricing": [] },
+      { "Variant Name": "4L", "Supplier Price": 1420.00, "Selling Price": 1680.00, "Custom Pricing": [] },
+      { "Variant Name": "16L", "Supplier Price": 5400.00, "Selling Price": 6200.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Paint",
+    "Product Name": "Boysen Quick Dry Enamel",
+    "Product Description": "Fast-drying enamel paint for metal and wood surfaces",
+    "Product Supplier": "Boysen Philippines Inc.",
+    "Variants": [
+      { "Variant Name": "1L", "Supplier Price": 450.00, "Selling Price": 560.00, "Custom Pricing": [] },
+      { "Variant Name": "4L", "Supplier Price": 1720.00, "Selling Price": 1990.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Paint",
+    "Product Name": "Boysen Latex Gloss",
+    "Product Description": "Premium latex gloss for interior walls",
+    "Product Supplier": "Boysen Philippines Inc.",
+    "Variants": [
+      { "Variant Name": "1L", "Supplier Price": 410.00, "Selling Price": 510.00, "Custom Pricing": [] },
+      { "Variant Name": "4L", "Supplier Price": 1550.00, "Selling Price": 1820.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Paint",
+    "Product Name": "Omni Acrylic Latex",
+    "Product Description": "Economical acrylic latex paint",
+    "Product Supplier": "Omni Paint Center",
+    "Variants": [
+      { "Variant Name": "1L", "Supplier Price": 320.00, "Selling Price": 410.00, "Custom Pricing": [] },
+      { "Variant Name": "4L", "Supplier Price": 1200.00, "Selling Price": 1450.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Paint",
+    "Product Name": "Omni Flat Wall Latex",
+    "Product Description": "Flat finish latex for interior walls",
+    "Product Supplier": "Omni Paint Center",
+    "Variants": [
+      { "Variant Name": "4L", "Supplier Price": 1100.00, "Selling Price": 1350.00, "Custom Pricing": [] },
+      { "Variant Name": "16L", "Supplier Price": 4200.00, "Selling Price": 4900.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Paint",
+    "Product Name": "Omni Quick Dry Enamel",
+    "Product Description": "Enamel paint for wood and metal",
+    "Product Supplier": "Omni Paint Center",
+    "Variants": [
+      { "Variant Name": "1L", "Supplier Price": 350.00, "Selling Price": 440.00, "Custom Pricing": [] },
+      { "Variant Name": "4L", "Supplier Price": 1300.00, "Selling Price": 1550.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Paint",
+    "Product Name": "Omni Roof Paint",
+    "Product Description": "Elastomeric roof coating paint",
+    "Product Supplier": "Omni Paint Center",
+    "Variants": [
+      { "Variant Name": "4L", "Supplier Price": 1450.00, "Selling Price": 1720.00, "Custom Pricing": [] },
+      { "Variant Name": "16L", "Supplier Price": 5400.00, "Selling Price": 6200.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Paint",
+    "Product Name": "Boysen Masonry Neutralizer",
+    "Product Description": "Primer for new concrete surfaces",
+    "Product Supplier": "Boysen Philippines Inc.",
+    "Variants": [
+      { "Variant Name": "4L", "Supplier Price": 980.00, "Selling Price": 1180.00, "Custom Pricing": [] },
+      { "Variant Name": "16L", "Supplier Price": 3600.00, "Selling Price": 4200.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Paint",
+    "Product Name": "Boysen Paint Thinner",
+    "Product Description": "Universal paint thinner for oil-based paints",
+    "Product Supplier": "Boysen Philippines Inc.",
+    "Variants": [
+      { "Variant Name": "500ml", "Supplier Price": 120.00, "Selling Price": 165.00, "Custom Pricing": [] },
+      { "Variant Name": "1L", "Supplier Price": 220.00, "Selling Price": 290.00, "Custom Pricing": [] },
+      { "Variant Name": "4L", "Supplier Price": 780.00, "Selling Price": 950.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Cement",
+    "Product Name": "Holcim Portland Cement",
+    "Product Description": "Type 1 Portland cement for general construction",
+    "Product Supplier": "Holcim Philippines",
+    "Variants": [
+      { "Variant Name": "40kg bag", "Supplier Price": 240.00, "Selling Price": 275.00, "Custom Pricing": [
+        { "Customer Name": "ABC Construction", "Custom Price": 260.00 }
+      ] }
+    ]
+  },
+  {
+    "Product Category": "Cement",
+    "Product Name": "Republic Portland Cement",
+    "Product Description": "Type 1P Portland cement",
+    "Product Supplier": "Republic Cement Corp.",
+    "Variants": [
+      { "Variant Name": "40kg bag", "Supplier Price": 235.00, "Selling Price": 270.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Cement",
+    "Product Name": "Holcim Rapid Set Cement",
+    "Product Description": "Fast-setting cement for repairs",
+    "Product Supplier": "Holcim Philippines",
+    "Variants": [
+      { "Variant Name": "25kg bag", "Supplier Price": 290.00, "Selling Price": 330.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Cement",
+    "Product Name": "APO Portland Cement",
+    "Product Description": "Type 1 Portland cement",
+    "Product Supplier": "Cemex Philippines",
+    "Variants": [
+      { "Variant Name": "40kg bag", "Supplier Price": 238.00, "Selling Price": 272.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Cement",
+    "Product Name": "Holcim Masonry Cement",
+    "Product Description": "Cement for mortar and plastering",
+    "Product Supplier": "Holcim Philippines",
+    "Variants": [
+      { "Variant Name": "40kg bag", "Supplier Price": 225.00, "Selling Price": 260.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Sand & Aggregates",
+    "Product Name": "White Sand",
+    "Product Description": "Fine white sand for construction",
+    "Product Supplier": "Pampanga Sand & Gravel",
+    "Variants": [
+      { "Variant Name": "1 cubic meter", "Supplier Price": 1200.00, "Selling Price": 1500.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Sand & Aggregates",
+    "Product Name": "River Sand",
+    "Product Description": "Washed river sand for concrete",
+    "Product Supplier": "Bulacan River Sand Supply",
+    "Variants": [
+      { "Variant Name": "1 cubic meter", "Supplier Price": 1100.00, "Selling Price": 1400.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Sand & Aggregates",
+    "Product Name": "Gravel 3/4",
+    "Product Description": "Crushed gravel 3/4 inch",
+    "Product Supplier": "Rizal Aggregates Trading",
+    "Variants": [
+      { "Variant Name": "1 cubic meter", "Supplier Price": 1300.00, "Selling Price": 1600.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Sand & Aggregates",
+    "Product Name": "Gravel 3/8",
+    "Product Description": "Crushed gravel 3/8 inch",
+    "Product Supplier": "Rizal Aggregates Trading",
+    "Variants": [
+      { "Variant Name": "1 cubic meter", "Supplier Price": 1250.00, "Selling Price": 1550.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Sand & Aggregates",
+    "Product Name": "Mixed Sand & Gravel",
+    "Product Description": "Ready-mix sand and gravel",
+    "Product Supplier": "Pampanga Sand & Gravel",
+    "Variants": [
+      { "Variant Name": "1 cubic meter", "Supplier Price": 1150.00, "Selling Price": 1450.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Plywood",
+    "Product Name": "Hardiflex Cement Board",
+    "Product Description": "Fiber cement board for walls and ceilings",
+    "Product Supplier": "Hardie Philippines",
+    "Variants": [
+      { "Variant Name": "4ft x 8ft x 4.5mm", "Supplier Price": 420.00, "Selling Price": 520.00, "Custom Pricing": [
+        { "Customer Name": "BuildRight Corp.", "Custom Price": 495.00 }
+      ] },
+      { "Variant Name": "4ft x 8ft x 6mm", "Supplier Price": 520.00, "Selling Price": 640.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Plywood",
+    "Product Name": "Hardiflex Ceiling Board",
+    "Product Description": "Fiber cement ceiling board",
+    "Product Supplier": "Hardie Philippines",
+    "Variants": [
+      { "Variant Name": "4ft x 8ft x 4.5mm", "Supplier Price": 400.00, "Selling Price": 500.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Plywood",
+    "Product Name": "Marine Plywood",
+    "Product Description": "Water-resistant plywood for marine use",
+    "Product Supplier": "Mindanao Plywood Corp.",
+    "Variants": [
+      { "Variant Name": "4ft x 8ft x 6mm", "Supplier Price": 680.00, "Selling Price": 820.00, "Custom Pricing": [] },
+      { "Variant Name": "4ft x 8ft x 12mm", "Supplier Price": 1250.00, "Selling Price": 1450.00, "Custom Pricing": [] },
+      { "Variant Name": "4ft x 8ft x 18mm", "Supplier Price": 1850.00, "Selling Price": 2100.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Plywood",
+    "Product Name": "Ordinary Plywood",
+    "Product Description": "Standard plywood for general use",
+    "Product Supplier": "Mindanao Plywood Corp.",
+    "Variants": [
+      { "Variant Name": "4ft x 8ft x 4.5mm", "Supplier Price": 380.00, "Selling Price": 480.00, "Custom Pricing": [] },
+      { "Variant Name": "4ft x 8ft x 12mm", "Supplier Price": 850.00, "Selling Price": 1050.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Plywood",
+    "Product Name": "Phenolic Board",
+    "Product Description": "High-density phenolic plywood for formworks",
+    "Product Supplier": "Luzon Plywood Trading",
+    "Variants": [
+      { "Variant Name": "4ft x 8ft x 12mm", "Supplier Price": 1450.00, "Selling Price": 1700.00, "Custom Pricing": [] },
+      { "Variant Name": "4ft x 8ft x 18mm", "Supplier Price": 2100.00, "Selling Price": 2400.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Lights & Electrical",
+    "Product Name": "Omni LED Bulb",
+    "Product Description": "Energy-efficient LED bulb",
+    "Product Supplier": "Omni Electrical Supply",
+    "Variants": [
+      { "Variant Name": "5W E27", "Supplier Price": 85.00, "Selling Price": 120.00, "Custom Pricing": [] },
+      { "Variant Name": "9W E27", "Supplier Price": 120.00, "Selling Price": 165.00, "Custom Pricing": [] },
+      { "Variant Name": "12W E27", "Supplier Price": 155.00, "Selling Price": 210.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Lights & Electrical",
+    "Product Name": "Omni LED Downlight",
+    "Product Description": "Recessed LED downlight",
+    "Product Supplier": "Omni Electrical Supply",
+    "Variants": [
+      { "Variant Name": "7W 3-inch", "Supplier Price": 220.00, "Selling Price": 290.00, "Custom Pricing": [] },
+      { "Variant Name": "12W 4-inch", "Supplier Price": 310.00, "Selling Price": 400.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Lights & Electrical",
+    "Product Name": "Omni Fluorescent Tube",
+    "Product Description": "T8 fluorescent tube light",
+    "Product Supplier": "Omni Electrical Supply",
+    "Variants": [
+      { "Variant Name": "18W 4ft", "Supplier Price": 95.00, "Selling Price": 130.00, "Custom Pricing": [] },
+      { "Variant Name": "36W 4ft", "Supplier Price": 130.00, "Selling Price": 175.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Lights & Electrical",
+    "Product Name": "Omni LED Flood Light",
+    "Product Description": "Outdoor LED flood light",
+    "Product Supplier": "Omni Electrical Supply",
+    "Variants": [
+      { "Variant Name": "50W", "Supplier Price": 680.00, "Selling Price": 850.00, "Custom Pricing": [] },
+      { "Variant Name": "100W", "Supplier Price": 1150.00, "Selling Price": 1400.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Lights & Electrical",
+    "Product Name": "Omni Extension Cord",
+    "Product Description": "Heavy-duty extension cord",
+    "Product Supplier": "Omni Electrical Supply",
+    "Variants": [
+      { "Variant Name": "3 meters", "Supplier Price": 220.00, "Selling Price": 290.00, "Custom Pricing": [] },
+      { "Variant Name": "5 meters", "Supplier Price": 320.00, "Selling Price": 410.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Lights & Electrical",
+    "Product Name": "Omni Circuit Breaker",
+    "Product Description": "Miniature circuit breaker",
+    "Product Supplier": "Omni Electrical Supply",
+    "Variants": [
+      { "Variant Name": "15A", "Supplier Price": 180.00, "Selling Price": 240.00, "Custom Pricing": [] },
+      { "Variant Name": "20A", "Supplier Price": 195.00, "Selling Price": 260.00, "Custom Pricing": [] },
+      { "Variant Name": "30A", "Supplier Price": 220.00, "Selling Price": 290.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Lights & Electrical",
+    "Product Name": "Yale Door Lock",
+    "Product Description": "Heavy-duty mortise door lock",
+    "Product Supplier": "Yale Philippines",
+    "Variants": [
+      { "Variant Name": "Standard", "Supplier Price": 1850.00, "Selling Price": 2200.00, "Custom Pricing": [
+        { "Customer Name": "Prime Realty Inc.", "Custom Price": 2100.00 }
+      ] },
+      { "Variant Name": "Premium", "Supplier Price": 2800.00, "Selling Price": 3300.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Lights & Electrical",
+    "Product Name": "Yale Padlock",
+    "Product Description": "Brass padlock with hardened steel shackle",
+    "Product Supplier": "Yale Philippines",
+    "Variants": [
+      { "Variant Name": "40mm", "Supplier Price": 320.00, "Selling Price": 410.00, "Custom Pricing": [] },
+      { "Variant Name": "50mm", "Supplier Price": 420.00, "Selling Price": 520.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Lights & Electrical",
+    "Product Name": "Yale Deadbolt Lock",
+    "Product Description": "Single cylinder deadbolt",
+    "Product Supplier": "Yale Philippines",
+    "Variants": [
+      { "Variant Name": "Standard", "Supplier Price": 1200.00, "Selling Price": 1450.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Lights & Electrical",
+    "Product Name": "Omni Electrical Tape",
+    "Product Description": "PVC electrical insulation tape",
+    "Product Supplier": "Omni Electrical Supply",
+    "Variants": [
+      { "Variant Name": "18mm x 10m", "Supplier Price": 25.00, "Selling Price": 40.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Lights & Electrical",
+    "Product Name": "Omni Switch",
+    "Product Description": "Wall light switch",
+    "Product Supplier": "Omni Electrical Supply",
+    "Variants": [
+      { "Variant Name": "1-gang", "Supplier Price": 65.00, "Selling Price": 95.00, "Custom Pricing": [] },
+      { "Variant Name": "2-gang", "Supplier Price": 95.00, "Selling Price": 135.00, "Custom Pricing": [] },
+      { "Variant Name": "3-gang", "Supplier Price": 125.00, "Selling Price": 175.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Lights & Electrical",
+    "Product Name": "Omni Outlet",
+    "Product Description": "Universal wall outlet",
+    "Product Supplier": "Omni Electrical Supply",
+    "Variants": [
+      { "Variant Name": "Single", "Supplier Price": 75.00, "Selling Price": 110.00, "Custom Pricing": [] },
+      { "Variant Name": "Double", "Supplier Price": 120.00, "Selling Price": 165.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Lights & Electrical",
+    "Product Name": "Omni THHN Wire",
+    "Product Description": "Stranded copper wire",
+    "Product Supplier": "Omni Electrical Supply",
+    "Variants": [
+      { "Variant Name": "2.0mm 100m roll", "Supplier Price": 1450.00, "Selling Price": 1750.00, "Custom Pricing": [] },
+      { "Variant Name": "3.5mm 100m roll", "Supplier Price": 2350.00, "Selling Price": 2750.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Nails & Screws",
+    "Product Name": "Common Wire Nails",
+    "Product Description": "Steel common nails",
+    "Product Supplier": "Pag-asa Steel Works",
+    "Variants": [
+      { "Variant Name": "1 inch (per kg)", "Supplier Price": 55.00, "Selling Price": 75.00, "Custom Pricing": [] },
+      { "Variant Name": "2 inch (per kg)", "Supplier Price": 52.00, "Selling Price": 72.00, "Custom Pricing": [] },
+      { "Variant Name": "3 inch (per kg)", "Supplier Price": 50.00, "Selling Price": 70.00, "Custom Pricing": [] },
+      { "Variant Name": "4 inch (per kg)", "Supplier Price": 48.00, "Selling Price": 68.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Nails & Screws",
+    "Product Name": "Concrete Nails",
+    "Product Description": "Hardened steel nails for concrete",
+    "Product Supplier": "Pag-asa Steel Works",
+    "Variants": [
+      { "Variant Name": "2 inch (per kg)", "Supplier Price": 85.00, "Selling Price": 110.00, "Custom Pricing": [] },
+      { "Variant Name": "3 inch (per kg)", "Supplier Price": 80.00, "Selling Price": 105.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Nails & Screws",
+    "Product Name": "Finishing Nails",
+    "Product Description": "Small head nails for finishing work",
+    "Product Supplier": "Pag-asa Steel Works",
+    "Variants": [
+      { "Variant Name": "1 inch (per kg)", "Supplier Price": 65.00, "Selling Price": 85.00, "Custom Pricing": [] },
+      { "Variant Name": "1.5 inch (per kg)", "Supplier Price": 62.00, "Selling Price": 82.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Nails & Screws",
+    "Product Name": "Umbrella Nails",
+    "Product Description": "Roofing nails with umbrella head",
+    "Product Supplier": "Pag-asa Steel Works",
+    "Variants": [
+      { "Variant Name": "2.5 inch (per kg)", "Supplier Price": 75.00, "Selling Price": 98.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Nails & Screws",
+    "Product Name": "Wood Screws",
+    "Product Description": "Phillips head wood screws",
+    "Product Supplier": "Fastener Solutions Inc.",
+    "Variants": [
+      { "Variant Name": "1 inch (100 pcs)", "Supplier Price": 85.00, "Selling Price": 120.00, "Custom Pricing": [] },
+      { "Variant Name": "2 inch (100 pcs)", "Supplier Price": 110.00, "Selling Price": 150.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Nails & Screws",
+    "Product Name": "Self-Drilling Screws",
+    "Product Description": "Metal self-drilling screws",
+    "Product Supplier": "Fastener Solutions Inc.",
+    "Variants": [
+      { "Variant Name": "1 inch (100 pcs)", "Supplier Price": 120.00, "Selling Price": 165.00, "Custom Pricing": [] },
+      { "Variant Name": "2 inch (100 pcs)", "Supplier Price": 155.00, "Selling Price": 210.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Nails & Screws",
+    "Product Name": "Concrete Screws",
+    "Product Description": "Anchoring screws for concrete",
+    "Product Supplier": "Fastener Solutions Inc.",
+    "Variants": [
+      { "Variant Name": "2 inch (50 pcs)", "Supplier Price": 180.00, "Selling Price": 240.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Tools",
+    "Product Name": "Stanley Claw Hammer",
+    "Product Description": "Steel claw hammer with rubber grip",
+    "Product Supplier": "Stanley Tools Philippines",
+    "Variants": [
+      { "Variant Name": "16oz", "Supplier Price": 480.00, "Selling Price": 620.00, "Custom Pricing": [] },
+      { "Variant Name": "20oz", "Supplier Price": 580.00, "Selling Price": 740.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Tools",
+    "Product Name": "Stanley Tape Measure",
+    "Product Description": "Steel tape measure with lock",
+    "Product Supplier": "Stanley Tools Philippines",
+    "Variants": [
+      { "Variant Name": "5m", "Supplier Price": 180.00, "Selling Price": 250.00, "Custom Pricing": [] },
+      { "Variant Name": "8m", "Supplier Price": 280.00, "Selling Price": 370.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Tools",
+    "Product Name": "Stanley Screwdriver Set",
+    "Product Description": "6-piece screwdriver set",
+    "Product Supplier": "Stanley Tools Philippines",
+    "Variants": [
+      { "Variant Name": "6-piece", "Supplier Price": 650.00, "Selling Price": 820.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Tools",
+    "Product Name": "Stanley Adjustable Wrench",
+    "Product Description": "Chrome vanadium adjustable wrench",
+    "Product Supplier": "Stanley Tools Philippines",
+    "Variants": [
+      { "Variant Name": "8 inch", "Supplier Price": 380.00, "Selling Price": 490.00, "Custom Pricing": [] },
+      { "Variant Name": "12 inch", "Supplier Price": 580.00, "Selling Price": 720.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Tools",
+    "Product Name": "Stanley Level Bar",
+    "Product Description": "Aluminum spirit level",
+    "Product Supplier": "Stanley Tools Philippines",
+    "Variants": [
+      { "Variant Name": "24 inch", "Supplier Price": 420.00, "Selling Price": 540.00, "Custom Pricing": [] },
+      { "Variant Name": "48 inch", "Supplier Price": 750.00, "Selling Price": 920.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Tools",
+    "Product Name": "Makita Angle Grinder",
+    "Product Description": "4-inch angle grinder 720W",
+    "Product Supplier": "Makita Philippines",
+    "Variants": [
+      { "Variant Name": "4 inch 720W", "Supplier Price": 3200.00, "Selling Price": 3800.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Tools",
+    "Product Name": "Makita Drill",
+    "Product Description": "10mm electric drill 450W",
+    "Product Supplier": "Makita Philippines",
+    "Variants": [
+      { "Variant Name": "10mm 450W", "Supplier Price": 2800.00, "Selling Price": 3400.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Tools",
+    "Product Name": "Makita Circular Saw",
+    "Product Description": "7-1/4 inch circular saw 1050W",
+    "Product Supplier": "Makita Philippines",
+    "Variants": [
+      { "Variant Name": "7-1/4 inch 1050W", "Supplier Price": 4500.00, "Selling Price": 5300.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Tools",
+    "Product Name": "Bosch Jigsaw",
+    "Product Description": "650W jigsaw with variable speed",
+    "Product Supplier": "Bosch Philippines",
+    "Variants": [
+      { "Variant Name": "650W", "Supplier Price": 4200.00, "Selling Price": 4900.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Tools",
+    "Product Name": "Bosch Rotary Hammer",
+    "Product Description": "800W SDS-plus rotary hammer",
+    "Product Supplier": "Bosch Philippines",
+    "Variants": [
+      { "Variant Name": "800W", "Supplier Price": 8500.00, "Selling Price": 9800.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Tools",
+    "Product Name": "Stanley Utility Knife",
+    "Product Description": "Retractable utility knife",
+    "Product Supplier": "Stanley Tools Philippines",
+    "Variants": [
+      { "Variant Name": "Standard", "Supplier Price": 150.00, "Selling Price": 210.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Tools",
+    "Product Name": "Stanley Pliers",
+    "Product Description": "Combination pliers with insulated grip",
+    "Product Supplier": "Stanley Tools Philippines",
+    "Variants": [
+      { "Variant Name": "8 inch", "Supplier Price": 320.00, "Selling Price": 420.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Tools",
+    "Product Name": "Stanley Paint Brush",
+    "Product Description": "Flat paint brush with synthetic bristles",
+    "Product Supplier": "Stanley Tools Philippines",
+    "Variants": [
+      { "Variant Name": "1 inch", "Supplier Price": 45.00, "Selling Price": 70.00, "Custom Pricing": [] },
+      { "Variant Name": "2 inch", "Supplier Price": 75.00, "Selling Price": 105.00, "Custom Pricing": [] },
+      { "Variant Name": "4 inch", "Supplier Price": 120.00, "Selling Price": 165.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Tools",
+    "Product Name": "Stanley Paint Roller",
+    "Product Description": "Paint roller with tray",
+    "Product Supplier": "Stanley Tools Philippines",
+    "Variants": [
+      { "Variant Name": "4 inch", "Supplier Price": 85.00, "Selling Price": 120.00, "Custom Pricing": [] },
+      { "Variant Name": "9 inch", "Supplier Price": 130.00, "Selling Price": 180.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Plumbing",
+    "Product Name": "PVC Pipe",
+    "Product Description": "Blue PVC pipe for water lines",
+    "Product Supplier": "Neltex Philippines",
+    "Variants": [
+      { "Variant Name": "1/2 inch x 3m", "Supplier Price": 85.00, "Selling Price": 120.00, "Custom Pricing": [] },
+      { "Variant Name": "3/4 inch x 3m", "Supplier Price": 120.00, "Selling Price": 165.00, "Custom Pricing": [] },
+      { "Variant Name": "1 inch x 3m", "Supplier Price": 165.00, "Selling Price": 220.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Plumbing",
+    "Product Name": "PVC Elbow",
+    "Product Description": "90-degree PVC elbow fitting",
+    "Product Supplier": "Neltex Philippines",
+    "Variants": [
+      { "Variant Name": "1/2 inch", "Supplier Price": 12.00, "Selling Price": 20.00, "Custom Pricing": [] },
+      { "Variant Name": "3/4 inch", "Supplier Price": 18.00, "Selling Price": 28.00, "Custom Pricing": [] },
+      { "Variant Name": "1 inch", "Supplier Price": 28.00, "Selling Price": 42.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Plumbing",
+    "Product Name": "PVC Tee",
+    "Product Description": "PVC tee fitting",
+    "Product Supplier": "Neltex Philippines",
+    "Variants": [
+      { "Variant Name": "1/2 inch", "Supplier Price": 15.00, "Selling Price": 25.00, "Custom Pricing": [] },
+      { "Variant Name": "3/4 inch", "Supplier Price": 22.00, "Selling Price": 35.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Plumbing",
+    "Product Name": "PVC Solvent Cement",
+    "Product Description": "PVC pipe solvent cement",
+    "Product Supplier": "Neltex Philippines",
+    "Variants": [
+      { "Variant Name": "100ml", "Supplier Price": 65.00, "Selling Price": 95.00, "Custom Pricing": [] },
+      { "Variant Name": "400ml", "Supplier Price": 180.00, "Selling Price": 240.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Plumbing",
+    "Product Name": "Faucet",
+    "Product Description": "Brass faucet with ceramic cartridge",
+    "Product Supplier": "Sanitary Ware Trading",
+    "Variants": [
+      { "Variant Name": "1/2 inch", "Supplier Price": 280.00, "Selling Price": 380.00, "Custom Pricing": [] },
+      { "Variant Name": "3/4 inch", "Supplier Price": 380.00, "Selling Price": 490.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Plumbing",
+    "Product Name": "Stainless Steel Hose",
+    "Product Description": "Flexible braided hose",
+    "Product Supplier": "Sanitary Ware Trading",
+    "Variants": [
+      { "Variant Name": "1/2 inch x 30cm", "Supplier Price": 85.00, "Selling Price": 120.00, "Custom Pricing": [] },
+      { "Variant Name": "1/2 inch x 60cm", "Supplier Price": 120.00, "Selling Price": 165.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Roofing",
+    "Product Name": "Pre-Painted GI Sheet",
+    "Product Description": "Pre-painted galvanized iron roofing sheet",
+    "Product Supplier": "Union Galvasteel Corp.",
+    "Variants": [
+      { "Variant Name": "8ft x 0.4mm", "Supplier Price": 380.00, "Selling Price": 480.00, "Custom Pricing": [] },
+      { "Variant Name": "10ft x 0.4mm", "Supplier Price": 480.00, "Selling Price": 600.00, "Custom Pricing": [] },
+      { "Variant Name": "12ft x 0.4mm", "Supplier Price": 580.00, "Selling Price": 720.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Roofing",
+    "Product Name": "Corrugated GI Sheet",
+    "Product Description": "Plain corrugated galvanized iron sheet",
+    "Product Supplier": "Union Galvasteel Corp.",
+    "Variants": [
+      { "Variant Name": "8ft x 0.4mm", "Supplier Price": 320.00, "Selling Price": 410.00, "Custom Pricing": [] },
+      { "Variant Name": "10ft x 0.4mm", "Supplier Price": 400.00, "Selling Price": 510.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Roofing",
+    "Product Name": "Ridge Roll",
+    "Product Description": "GI ridge roll for roof ridges",
+    "Product Supplier": "Union Galvasteel Corp.",
+    "Variants": [
+      { "Variant Name": "8ft", "Supplier Price": 220.00, "Selling Price": 290.00, "Custom Pricing": [] },
+      { "Variant Name": "10ft", "Supplier Price": 270.00, "Selling Price": 350.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Roofing",
+    "Product Name": "Roofing Screw",
+    "Product Description": "Self-drilling roofing screw with neoprene washer",
+    "Product Supplier": "Fastener Solutions Inc.",
+    "Variants": [
+      { "Variant Name": "2 inch (100 pcs)", "Supplier Price": 150.00, "Selling Price": 200.00, "Custom Pricing": [] },
+      { "Variant Name": "3 inch (100 pcs)", "Supplier Price": 180.00, "Selling Price": 240.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Door Hinge",
+    "Product Description": "Stainless steel door hinge",
+    "Product Supplier": "Yale Philippines",
+    "Variants": [
+      { "Variant Name": "4 inch", "Supplier Price": 85.00, "Selling Price": 120.00, "Custom Pricing": [] },
+      { "Variant Name": "5 inch", "Supplier Price": 110.00, "Selling Price": 150.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Door Knob",
+    "Product Description": "Stainless steel door knob",
+    "Product Supplier": "Yale Philippines",
+    "Variants": [
+      { "Variant Name": "Standard", "Supplier Price": 220.00, "Selling Price": 300.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Cabinet Lock",
+    "Product Description": "Cam lock for cabinets",
+    "Product Supplier": "Yale Philippines",
+    "Variants": [
+      { "Variant Name": "16mm", "Supplier Price": 85.00, "Selling Price": 120.00, "Custom Pricing": [] },
+      { "Variant Name": "20mm", "Supplier Price": 95.00, "Selling Price": 135.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Gate Latch",
+    "Product Description": "Heavy-duty gate latch",
+    "Product Supplier": "Yale Philippines",
+    "Variants": [
+      { "Variant Name": "Standard", "Supplier Price": 180.00, "Selling Price": 240.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Steel Bar",
+    "Product Description": "Deformed steel reinforcing bar",
+    "Product Supplier": "SteelAsia Manufacturing",
+    "Variants": [
+      { "Variant Name": "10mm x 6m", "Supplier Price": 180.00, "Selling Price": 220.00, "Custom Pricing": [] },
+      { "Variant Name": "12mm x 6m", "Supplier Price": 260.00, "Selling Price": 310.00, "Custom Pricing": [] },
+      { "Variant Name": "16mm x 6m", "Supplier Price": 460.00, "Selling Price": 540.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "G.I. Wire",
+    "Product Description": "Galvanized iron tie wire",
+    "Product Supplier": "Pag-asa Steel Works",
+    "Variants": [
+      { "Variant Name": "No. 16 (per kg)", "Supplier Price": 75.00, "Selling Price": 98.00, "Custom Pricing": [] },
+      { "Variant Name": "No. 18 (per kg)", "Supplier Price": 72.00, "Selling Price": 95.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Welding Rod",
+    "Product Description": "E6013 welding electrode",
+    "Product Supplier": "Pag-asa Steel Works",
+    "Variants": [
+      { "Variant Name": "2.5mm (per kg)", "Supplier Price": 120.00, "Selling Price": 155.00, "Custom Pricing": [] },
+      { "Variant Name": "3.2mm (per kg)", "Supplier Price": 115.00, "Selling Price": 150.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Hacksaw Blade",
+    "Product Description": "Bi-metal hacksaw blade",
+    "Product Supplier": "Stanley Tools Philippines",
+    "Variants": [
+      { "Variant Name": "12 inch 18T", "Supplier Price": 55.00, "Selling Price": 80.00, "Custom Pricing": [] },
+      { "Variant Name": "12 inch 24T", "Supplier Price": 55.00, "Selling Price": 80.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Grinding Disc",
+    "Product Description": "Abrasive grinding disc for metal",
+    "Product Supplier": "Makita Philippines",
+    "Variants": [
+      { "Variant Name": "4 inch", "Supplier Price": 45.00, "Selling Price": 65.00, "Custom Pricing": [] },
+      { "Variant Name": "5 inch", "Supplier Price": 60.00, "Selling Price": 85.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Cutting Disc",
+    "Product Description": "Abrasive cutting disc for metal",
+    "Product Supplier": "Makita Philippines",
+    "Variants": [
+      { "Variant Name": "4 inch", "Supplier Price": 40.00, "Selling Price": 60.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Safety Helmet",
+    "Product Description": "Construction safety helmet",
+    "Product Supplier": "Safety First Trading",
+    "Variants": [
+      { "Variant Name": "White", "Supplier Price": 180.00, "Selling Price": 250.00, "Custom Pricing": [] },
+      { "Variant Name": "Yellow", "Supplier Price": 180.00, "Selling Price": 250.00, "Custom Pricing": [] },
+      { "Variant Name": "Blue", "Supplier Price": 180.00, "Selling Price": 250.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Safety Gloves",
+    "Product Description": "Cotton work gloves",
+    "Product Supplier": "Safety First Trading",
+    "Variants": [
+      { "Variant Name": "One size", "Supplier Price": 35.00, "Selling Price": 55.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Safety Goggles",
+    "Product Description": "Clear safety goggles",
+    "Product Supplier": "Safety First Trading",
+    "Variants": [
+      { "Variant Name": "Clear", "Supplier Price": 85.00, "Selling Price": 120.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Dust Mask",
+    "Product Description": "N95 dust mask",
+    "Product Supplier": "Safety First Trading",
+    "Variants": [
+      { "Variant Name": "N95", "Supplier Price": 45.00, "Selling Price": 70.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Measuring Wheel",
+    "Product Description": "Foldable measuring wheel",
+    "Product Supplier": "Stanley Tools Philippines",
+    "Variants": [
+      { "Variant Name": "Standard", "Supplier Price": 1200.00, "Selling Price": 1500.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Chalk Line",
+    "Product Description": "Chalk line reel with chalk",
+    "Product Supplier": "Stanley Tools Philippines",
+    "Variants": [
+      { "Variant Name": "Standard", "Supplier Price": 220.00, "Selling Price": 300.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Paint Brush",
+    "Product Description": "Flat paint brush",
+    "Product Supplier": "Stanley Tools Philippines",
+    "Variants": [
+      { "Variant Name": "1 inch", "Supplier Price": 45.00, "Selling Price": 70.00, "Custom Pricing": [] },
+      { "Variant Name": "2 inch", "Supplier Price": 75.00, "Selling Price": 105.00, "Custom Pricing": [] },
+      { "Variant Name": "4 inch", "Supplier Price": 120.00, "Selling Price": 165.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Paint Roller",
+    "Product Description": "Paint roller with tray",
+    "Product Supplier": "Stanley Tools Philippines",
+    "Variants": [
+      { "Variant Name": "4 inch", "Supplier Price": 85.00, "Selling Price": 120.00, "Custom Pricing": [] },
+      { "Variant Name": "9 inch", "Supplier Price": 130.00, "Selling Price": 180.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Sandpaper",
+    "Product Description": "Abrasive sandpaper sheet",
+    "Product Supplier": "Stanley Tools Philippines",
+    "Variants": [
+      { "Variant Name": "80 grit", "Supplier Price": 15.00, "Selling Price": 25.00, "Custom Pricing": [] },
+      { "Variant Name": "120 grit", "Supplier Price": 15.00, "Selling Price": 25.00, "Custom Pricing": [] },
+      { "Variant Name": "220 grit", "Supplier Price": 15.00, "Selling Price": 25.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Wood Glue",
+    "Product Description": "White glue for wood",
+    "Product Supplier": "Everbuilt Adhesives",
+    "Variants": [
+      { "Variant Name": "250ml", "Supplier Price": 85.00, "Selling Price": 120.00, "Custom Pricing": [] },
+      { "Variant Name": "500ml", "Supplier Price": 140.00, "Selling Price": 190.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Epoxy Adhesive",
+    "Product Description": "Two-part epoxy glue",
+    "Product Supplier": "Everbuilt Adhesives",
+    "Variants": [
+      { "Variant Name": "50ml", "Supplier Price": 180.00, "Selling Price": 240.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Silicone Sealant",
+    "Product Description": "Waterproof silicone sealant",
+    "Product Supplier": "Everbuilt Adhesives",
+    "Variants": [
+      { "Variant Name": "300ml", "Supplier Price": 150.00, "Selling Price": 200.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Contact Cement",
+    "Product Description": "All-purpose contact cement",
+    "Product Supplier": "Everbuilt Adhesives",
+    "Variants": [
+      { "Variant Name": "250ml", "Supplier Price": 95.00, "Selling Price": 130.00, "Custom Pricing": [] },
+      { "Variant Name": "1L", "Supplier Price": 280.00, "Selling Price": 360.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Roof Sealant",
+    "Product Description": "Elastomeric roof sealant",
+    "Product Supplier": "Everbuilt Adhesives",
+    "Variants": [
+      { "Variant Name": "1L", "Supplier Price": 280.00, "Selling Price": 360.00, "Custom Pricing": [] },
+      { "Variant Name": "4L", "Supplier Price": 980.00, "Selling Price": 1200.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Tile Adhesive",
+    "Product Description": "Cement-based tile adhesive",
+    "Product Supplier": "Holcim Philippines",
+    "Variants": [
+      { "Variant Name": "25kg bag", "Supplier Price": 280.00, "Selling Price": 340.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Tile Grout",
+    "Product Description": "Cement-based tile grout",
+    "Product Supplier": "Holcim Philippines",
+    "Variants": [
+      { "Variant Name": "2kg", "Supplier Price": 120.00, "Selling Price": 165.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Waterproofing Membrane",
+    "Product Description": "Liquid waterproofing membrane",
+    "Product Supplier": "Everbuilt Adhesives",
+    "Variants": [
+      { "Variant Name": "4L", "Supplier Price": 850.00, "Selling Price": 1050.00, "Custom Pricing": [] },
+      { "Variant Name": "16L", "Supplier Price": 3200.00, "Selling Price": 3800.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "PVC Tile Trim",
+    "Product Description": "PVC tile edge trim",
+    "Product Supplier": "Neltex Philippines",
+    "Variants": [
+      { "Variant Name": "8mm x 2.5m", "Supplier Price": 85.00, "Selling Price": 120.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Aluminum Window",
+    "Product Description": "Sliding aluminum window frame",
+    "Product Supplier": "Aluminum Systems Inc.",
+    "Variants": [
+      { "Variant Name": "3ft x 4ft", "Supplier Price": 2800.00, "Selling Price": 3400.00, "Custom Pricing": [] },
+      { "Variant Name": "4ft x 5ft", "Supplier Price": 3800.00, "Selling Price": 4500.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Aluminum Screen",
+    "Product Description": "Aluminum window screen",
+    "Product Supplier": "Aluminum Systems Inc.",
+    "Variants": [
+      { "Variant Name": "3ft x 4ft", "Supplier Price": 650.00, "Selling Price": 820.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Door Closer",
+    "Product Description": "Automatic door closer",
+    "Product Supplier": "Yale Philippines",
+    "Variants": [
+      { "Variant Name": "Standard", "Supplier Price": 1200.00, "Selling Price": 1500.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Peephole Viewer",
+    "Product Description": "Door peephole viewer",
+    "Product Supplier": "Yale Philippines",
+    "Variants": [
+      { "Variant Name": "Standard", "Supplier Price": 120.00, "Selling Price": 165.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Door Stopper",
+    "Product Description": "Rubber door stopper",
+    "Product Supplier": "Yale Philippines",
+    "Variants": [
+      { "Variant Name": "Standard", "Supplier Price": 45.00, "Selling Price": 70.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Gate Wheel",
+    "Product Description": "Sliding gate wheel",
+    "Product Supplier": "Yale Philippines",
+    "Variants": [
+      { "Variant Name": "2 inch", "Supplier Price": 220.00, "Selling Price": 300.00, "Custom Pricing": [] },
+      { "Variant Name": "3 inch", "Supplier Price": 320.00, "Selling Price": 420.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Steel Plate",
+    "Product Description": "Mild steel plate",
+    "Product Supplier": "SteelAsia Manufacturing",
+    "Variants": [
+      { "Variant Name": "4ft x 8ft x 1.5mm", "Supplier Price": 1800.00, "Selling Price": 2200.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Angle Bar",
+    "Product Description": "Mild steel angle bar",
+    "Product Supplier": "SteelAsia Manufacturing",
+    "Variants": [
+      { "Variant Name": "25mm x 25mm x 6m", "Supplier Price": 520.00, "Selling Price": 620.00, "Custom Pricing": [] },
+      { "Variant Name": "38mm x 38mm x 6m", "Supplier Price": 780.00, "Selling Price": 920.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "C-Purlin",
+    "Product Description": "Galvanized C-purlin",
+    "Product Supplier": "Union Galvasteel Corp.",
+    "Variants": [
+      { "Variant Name": "2 inch x 3 inch x 6m", "Supplier Price": 650.00, "Selling Price": 780.00, "Custom Pricing": [] },
+      { "Variant Name": "2 inch x 4 inch x 6m", "Supplier Price": 780.00, "Selling Price": 920.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Wire Mesh",
+    "Product Description": "Welded wire mesh",
+    "Product Supplier": "Pag-asa Steel Works",
+    "Variants": [
+      { "Variant Name": "3ft x 6m", "Supplier Price": 650.00, "Selling Price": 800.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Concrete Vibrator",
+    "Product Description": "Portable concrete vibrator",
+    "Product Supplier": "Makita Philippines",
+    "Variants": [
+      { "Variant Name": "Standard", "Supplier Price": 8500.00, "Selling Price": 9800.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Wheelbarrow",
+    "Product Description": "Steel wheelbarrow",
+    "Product Supplier": "Pampanga Sand & Gravel",
+    "Variants": [
+      { "Variant Name": "Standard", "Supplier Price": 2200.00, "Selling Price": 2700.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Shovel",
+    "Product Description": "Round point shovel",
+    "Product Supplier": "Pampanga Sand & Gravel",
+    "Variants": [
+      { "Variant Name": "Standard", "Supplier Price": 280.00, "Selling Price": 370.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Hoe",
+    "Product Description": "Garden hoe",
+    "Product Supplier": "Pampanga Sand & Gravel",
+    "Variants": [
+      { "Variant Name": "Standard", "Supplier Price": 250.00, "Selling Price": 330.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Pickaxe",
+    "Product Description": "Steel pickaxe",
+    "Product Supplier": "Pampanga Sand & Gravel",
+    "Variants": [
+      { "Variant Name": "Standard", "Supplier Price": 320.00, "Selling Price": 420.00, "Custom Pricing": [] }
+    ]
+  },
+  {
+    "Product Category": "Hardware",
+    "Product Name": "Crowbar",
+    "Product Description": "Steel crowbar",
+    "Product Supplier": "Stanley Tools Philippines",
+    "Variants": [
+      { "Variant Name": "24 inch", "Supplier Price": 420.00, "Selling Price": 540.00, "Custom Pricing": [] },
+      { "Variant Name": "36 inch", "Supplier Price": 620.00, "Selling Price": 780.00, "Custom Pricing": [] }
+    ]
+  }
+]

@@ -17,7 +17,7 @@ import androidx.room.RoomDatabase
         SupplierPriceHistEntity::class,
         CustomerPriceHistEntity::class
     ],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -41,6 +41,13 @@ abstract class AppDatabase : RoomDatabase() {
                 )
                 .fallbackToDestructiveMigration(dropAllTables = true)
                 .build()
+
+                if (SampleDataConfig.ENABLE_SAMPLE_DATA) {
+                    kotlinx.coroutines.runBlocking {
+                        SampleDataInitializer.initializeIfNeeded(context.applicationContext, instance)
+                    }
+                }
+
                 INSTANCE = instance
                 instance
             }

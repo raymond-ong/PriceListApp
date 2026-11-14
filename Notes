@@ -136,3 +136,43 @@ Can you make it a link also with the green circular plus icon instead of a full 
 
 [3b]
 For the Add Product Variant link, can you align it to the left instead of being centered?
+Please remove the validations on the Supplier and Product Variant. The are not mandatory fields that need to be checked during Saving. Because I will plan a UI for updating them next time.
+
+[3c]
+For the database schema, I forgot to mention that in the products table, there must be a 'last_modified_date' column. 
+For the Add-Product case, the 'last_modified_date' initial value shall be the date the product was created.
+
+[4]
+App Icon
+
+[5] Product Search
+Card
+
+
+[6] Product Page
+Let us start implementing the Search Tab.
+This tab will be used for letting the user perform fuzzy search on the Product name, description and variant name.
+Please add the following controls:
+1. Textbox for Search
+- As the user types in something, please perform fuzzy search in the background.
+- Use a debounce of 300ms as the user types in his queries
+
+2. Search Results
+- If the user did not type anything in the Search textbox, show the last 10 products modified.
+- Show a card for each product.
+- This shall be the card content:
+a. Product name (maybe show it in bold)
+b. Product description
+c. Supplier Price
+d. Default selling price
+e. Just some index value starting at 1 so that the user will not be lost he is looking at the what nth record that fits the search. Maybe just have this float at the upper right of the card. Either show it as "#1", "#2" etc or just "1" or "2" if you can add a nice rounded border around the numbner.
+
+- Show a maximum of 20 products
+  Show a paginator at the top and bottom of the list. The paginator has the next/prev/first/last button.
+  The paginator must also show the current page number out of xx total pages.
+  On the top paginator, show also the number of records included in the filtered result.
+  
+  Whenever the user navigates to the next page, please automatically scroll to the top of the list
+
+For the design, I want the fuzzy search to be performant. SQLite does not support fuzzy search, so maybe we need to implement the fuzzy search using kotlin.
+So after the user logs in, load all product info from the database. Maybe we just need to store in memory all the fuzzy-searchable fields like product name, description and variant name. We don't need to store all product info in-memory (to conserve some memory).
