@@ -25,8 +25,8 @@ object ToastHelper {
 
             when (type) {
                 ToastType.SUCCESS -> {
-                    imageView.setImageResource(android.R.drawable.checkbox_on_background)
-                    imageView.setColorFilter(Color.parseColor("#4CAF50")) // Green check
+                    imageView.setImageResource(R.drawable.ic_check)
+                    imageView.clearColorFilter()
                 }
                 ToastType.ERROR -> {
                     imageView.setImageResource(android.R.drawable.stat_notify_error)

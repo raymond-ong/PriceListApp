@@ -176,3 +176,7 @@ e. Just some index value starting at 1 so that the user will not be lost he is l
 
 For the design, I want the fuzzy search to be performant. SQLite does not support fuzzy search, so maybe we need to implement the fuzzy search using kotlin.
 So after the user logs in, load all product info from the database. Maybe we just need to store in memory all the fuzzy-searchable fields like product name, description and variant name. We don't need to store all product info in-memory (to conserve some memory).
+
+
+[7] Product Page
+Let us setup the Product Page
