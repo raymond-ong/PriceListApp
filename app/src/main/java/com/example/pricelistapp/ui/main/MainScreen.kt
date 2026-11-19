@@ -1,14 +1,9 @@
 package com.example.pricelistapp.ui.main
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
@@ -20,41 +15,21 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.Image
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import com.example.pricelistapp.R
+import com.example.pricelistapp.data.local.ProductWithVariants
 import com.example.pricelistapp.data.local.User
 import com.example.pricelistapp.ui.login.UserRole
 
@@ -79,6 +54,7 @@ fun MainScreen(
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
     var selectedTab by remember { mutableStateOf(MainTab.SEARCH) }
+    var selectedProduct by remember { mutableStateOf<ProductWithVariants?>(null) }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     Scaffold(
@@ -213,8 +189,18 @@ fun MainScreen(
                 containerColor = MaterialTheme.colorScheme.surfaceVariant
             ) {
                 MainTab.entries.forEach { tab ->
+                    val isSelected = selectedTab == tab
+                    val iconScale by animateFloatAsState(
+                        targetValue = if (isSelected) 1.35f else 1f,
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioMediumBouncy,
+                            stiffness = Spring.StiffnessLow
+                        ),
+                        label = "iconScale"
+                    )
+
                     NavigationBarItem(
-                        selected = selectedTab == tab,
+                        selected = isSelected,
                         onClick = { selectedTab = tab },
                         colors = NavigationBarItemDefaults.colors(
                             indicatorColor = MaterialTheme.colorScheme.primaryContainer,
@@ -227,7 +213,9 @@ fun MainScreen(
                             Icon(
                                 imageVector = tab.icon,
                                 contentDescription = tab.title,
-                                modifier = Modifier.size(20.dp)
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .scale(iconScale)
                             )
                         },
                         label = {
@@ -252,14 +240,43 @@ fun MainScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp)
+                    .padding(horizontal = 4.dp, vertical = 8.dp)
             ) {
-                when (selectedTab) {
-                    MainTab.SEARCH -> SearchTabContent(user = user, currentRole = currentRole)
-                    MainTab.BROWSE -> BrowseTabContent(user = user, currentRole = currentRole)
-                    MainTab.PRODUCT -> ProductTabContent(user = user, currentRole = currentRole)
-                    MainTab.ADD -> AddTabContent(user = user, currentRole = currentRole)
-                    MainTab.SETTINGS -> SettingsTabContent(user = user, currentRole = currentRole)
+                // Tab transition animation (Right to Left / Left to Right)
+                AnimatedContent(
+                    targetState = selectedTab,
+                    transitionSpec = {
+                        if (targetState.ordinal > initialState.ordinal) {
+                            // Slide in from right, slide out to left
+                            (fadeIn(animationSpec = tween(300)) + slideInHorizontally(animationSpec = tween(300)) { width -> width }) togetherWith
+                                    (fadeOut(animationSpec = tween(300)) + slideOutHorizontally(animationSpec = tween(300)) { width -> -width })
+                        } else {
+                            // Slide in from left, slide out to right
+                            (fadeIn(animationSpec = tween(300)) + slideInHorizontally(animationSpec = tween(300)) { width -> -width }) togetherWith
+                                    (fadeOut(animationSpec = tween(300)) + slideOutHorizontally(animationSpec = tween(300)) { width -> width })
+                        }
+                    },
+                    label = "TabTransition"
+                ) { tab ->
+                    when (tab) {
+                        MainTab.SEARCH -> SearchTabContent(
+                            user = user,
+                            currentRole = currentRole,
+                            onProductClick = { product ->
+                                selectedProduct = product
+                                selectedTab = MainTab.PRODUCT
+                            }
+                        )
+                        MainTab.BROWSE -> BrowseTabContent(user = user, currentRole = currentRole)
+                        MainTab.PRODUCT -> ProductTabContent(
+                            user = user,
+                            currentRole = currentRole,
+                            productWithVariants = selectedProduct,
+                            onBackToSearch = { selectedTab = MainTab.SEARCH }
+                        )
+                        MainTab.ADD -> AddTabContent(user = user, currentRole = currentRole)
+                        MainTab.SETTINGS -> SettingsTabContent(user = user, currentRole = currentRole)
+                    }
                 }
             }
         }
@@ -289,34 +306,6 @@ fun BrowseTabContent(user: User, currentRole: UserRole) {
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSecondaryContainer
-            )
-        }
-    }
-}
-
-@Composable
-fun ProductTabContent(user: User, currentRole: UserRole) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Product List",
-                style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.onTertiaryContainer
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Product items and details will be displayed here.",
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onTertiaryContainer
             )
         }
     }

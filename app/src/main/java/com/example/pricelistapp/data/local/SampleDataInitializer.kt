@@ -134,9 +134,22 @@ object SampleDataInitializer {
                             val supHist = SupplierPriceHistEntity(
                                 userId = userId,
                                 date = now,
-                                variantId = variantEntity.id
+                                variantId = variantEntity.id,
+                                price = supplierPrice
                             )
                             productDao.insertSupplierPriceHist(supHist)
+
+                            // Default Selling Price Hist
+                            val defaultCustHist = CustomerPriceHistEntity(
+                                userId = userId,
+                                date = now,
+                                variantId = variantEntity.id,
+                                customerId = null,
+                                isDeleted = 0,
+                                isDefaultPrice = 1,
+                                price = sellingPrice
+                            )
+                            productDao.insertCustomerPriceHist(defaultCustHist)
 
                             // Custom Pricing
                             val customPricingArray = vObj.optJSONArray("Custom Pricing")
@@ -144,6 +157,7 @@ object SampleDataInitializer {
                                 for (cpIdx in 0 until customPricingArray.length()) {
                                     val cpObj = customPricingArray.getJSONObject(cpIdx)
                                     val customerName = cpObj.optString("Customer Name").trim()
+                                    val customPrice = cpObj.optDouble("Custom Price", sellingPrice)
                                     if (customerName.isNotEmpty()) {
                                         var custId = customerMap[customerName]
                                         if (custId == null) {
@@ -171,7 +185,8 @@ object SampleDataInitializer {
                                             variantId = variantEntity.id,
                                             customerId = custId,
                                             isDeleted = 0,
-                                            isDefaultPrice = 0
+                                            isDefaultPrice = 0,
+                                            price = customPrice
                                         )
                                         productDao.insertCustomerPriceHist(custHist)
                                     }

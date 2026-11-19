@@ -17,7 +17,7 @@ import androidx.room.RoomDatabase
         SupplierPriceHistEntity::class,
         CustomerPriceHistEntity::class
     ],
-    version = 6,
+    version = 7,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

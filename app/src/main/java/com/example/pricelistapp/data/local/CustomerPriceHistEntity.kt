@@ -14,9 +14,10 @@ data class CustomerPriceHistEntity(
     @ColumnInfo(name = "variant_id")
     val variantId: String,
     @ColumnInfo(name = "customer_id")
-    val customerId: String,
+    val customerId: String? = null,
     @ColumnInfo(name = "is_deleted")
     val isDeleted: Int = 0,
     @ColumnInfo(name = "is_default_price")
-    val isDefaultPrice: Int = 0
+    val isDefaultPrice: Int = 0,
+    val price: Double = 0.0
 )

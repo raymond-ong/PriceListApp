@@ -179,4 +179,25 @@ So after the user logs in, load all product info from the database. Maybe we jus
 
 
 [7] Product Page
-Let us setup the Product Page
+Let us setup the Product Tab.
+From the Search Tab, if the user taps/clicks on a card, the View switches to the Product Tab.
+If possible, create some animation from right to left or left to right (whichever is appropriate) to make it appear that the view is transitioning from the left tab to a tab on the right. For the navigation bar, is it possible to create some animation such that newly selected tab's icon (Product Tab) to have an animation like it becomes bigger momentarily?
+At first, the Product will be shown in Read Only Mode. The following controls shall be displyed:
+a. Show a floating button at the bottom right for the Edit Button (pen icon). I think yellow would be good?
+a. Title Bar:
+- Show "Product Details"
+b. Product Name
+c. Product Description
+d. Product Supplier
+e. Product Variant Card List, each card will have the following controls:
+- Variant Name
+- Last Supplier Price on the left, to the right, date when this price was last modified, then furthest right, an icon button (maybe a bundy clock).
+   If the user clicks on the icon button, a popup will be shown showing a list of all the historical price data.
+   Each list item has the Date on the left with a small caption underneath "By: <user>", then the price on the Right.
+   Remember in the DB schema design I have asked previously, there is a dedicated table for the supplier price history.
+- Unit
+- Last Selling price on the left, to the right, date when this price was last modified, then furthest right, the same icon button as the Supplier Price.
+  If the user clicks on the icon button, a popup will be shown showing a list of all the historical selling price data.
+ Each list item has the Date on the left with a small caption underneath "By: <user>" then on the next line, show if it's the default selling price, or for which particular customer, then the price on the Right.
+ Not sure if all these will fit properly in the UI.
+ Remember in the DB schema design I have asked previously, there is a dedicated table for the selling price history.

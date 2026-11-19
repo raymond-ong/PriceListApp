@@ -12,5 +12,6 @@ data class SupplierPriceHistEntity(
     val userId: String,
     val date: Long,
     @ColumnInfo(name = "variant_id")
-    val variantId: String
+    val variantId: String,
+    val price: Double = 0.0
 )

@@ -1,6 +1,8 @@
 package com.example.pricelistapp.ui.main
 
+import androidx.compose.animation.*
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -26,11 +28,11 @@ import com.example.pricelistapp.data.local.User
 import com.example.pricelistapp.ui.login.UserRole
 import java.util.Locale
 
-@Suppress("UNUSED_PARAMETER")
 @Composable
 fun SearchTabContent(
     user: User,
     currentRole: UserRole,
+    onProductClick: (ProductWithVariants) -> Unit,
     viewModel: SearchViewModel = viewModel()
 ) {
     val searchQuery by viewModel.searchQuery.collectAsState()
@@ -54,7 +56,7 @@ fun SearchTabContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(8.dp)
+            .padding(horizontal = 4.dp, vertical = 8.dp)
     ) {
         // Small label on top of the search textbox
         Text(
@@ -153,22 +155,38 @@ fun SearchTabContent(
             ) {
                 itemsIndexed(paginatedProducts) { index, item ->
                     val globalIndex = (currentPage - 1) * viewModel.pageSize + index + 1
-                    ProductCard(index = globalIndex, item = item)
+                    ProductCard(index = globalIndex, item = item, onClick = { onProductClick(item) })
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        val isAtBottom by remember {
+            derivedStateOf {
+                val layoutInfo = listState.layoutInfo
+                val totalItemsCount = layoutInfo.totalItemsCount
+                if (totalItemsCount <= 1) return@derivedStateOf true
+                val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()
+                lastVisibleItem != null && lastVisibleItem.index >= totalItemsCount - 1
+            }
+        }
 
-        // Bottom Paginator (Symmetrical & Centered)
-        PaginatorBar(
-            currentPage = currentPage,
-            totalPages = totalPages,
-            onFirst = { viewModel.firstPage() },
-            onPrev = { viewModel.prevPage() },
-            onNext = { viewModel.nextPage() },
-            onLast = { viewModel.lastPage() }
-        )
+        AnimatedVisibility(
+            visible = isAtBottom,
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically()
+        ) {
+            Column {
+                Spacer(modifier = Modifier.height(4.dp))
+                PaginatorBar(
+                    currentPage = currentPage,
+                    totalPages = totalPages,
+                    onFirst = { viewModel.firstPage() },
+                    onPrev = { viewModel.prevPage() },
+                    onNext = { viewModel.nextPage() },
+                    onLast = { viewModel.lastPage() }
+                )
+            }
+        }
     }
 }
 
@@ -230,7 +248,7 @@ fun PaginatorBar(
 }
 
 @Composable
-fun ProductCard(index: Int, item: ProductWithVariants) {
+fun ProductCard(index: Int, item: ProductWithVariants, onClick: () -> Unit) {
     val product = item.product
     val firstVariant = item.variants.firstOrNull()
     val supplierPrice = firstVariant?.supplierPrice ?: 0.0
@@ -239,7 +257,9 @@ fun ProductCard(index: Int, item: ProductWithVariants) {
     val variantName = firstVariant?.name
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
         elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
