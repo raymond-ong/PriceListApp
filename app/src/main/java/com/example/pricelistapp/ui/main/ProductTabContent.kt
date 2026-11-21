@@ -179,40 +179,467 @@ fun ProductTabContent(
 
     val greenColor = Color(0xFF2E7D32)
 
-    Scaffold(
-        topBar = {
-            if (isFromSearch) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 4.dp, vertical = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically
+    Column(modifier = Modifier.fillMaxSize()) {
+        if (isFromSearch) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 4.dp, vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TextButton(
+                    onClick = onBackToSearch,
+                    contentPadding = PaddingValues(horizontal = 4.dp)
                 ) {
-                    TextButton(
-                        onClick = onBackToSearch,
-                        contentPadding = PaddingValues(horizontal = 4.dp)
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back to Search",
+                        modifier = Modifier.size(20.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "Search",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(start = 4.dp, top = 8.dp, end = 4.dp, bottom = 80.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                // Product Info Card
+                item {
+                    OutlinedCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surface),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
                     ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back to Search",
-                            modifier = Modifier.size(20.dp),
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+                        ) {
+                            if (isEditing) {
+                                OutlinedTextField(
+                                    value = editedName,
+                                    onValueChange = { editedName = it },
+                                    label = { Text("Product Name") },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    singleLine = true
+                                )
+                                Spacer(modifier = Modifier.height(12.dp))
+                                OutlinedTextField(
+                                    value = editedDescription,
+                                    onValueChange = { editedDescription = it },
+                                    label = { Text("Description") },
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                                Spacer(modifier = Modifier.height(12.dp))
+
+                                // Supplier Dropdown in Edit Mode
+                                Text("Primary Supplier", style = MaterialTheme.typography.labelLarge)
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    OutlinedCard(
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .clickable { showSupplierSearchDialog = true },
+                                        colors = CardDefaults.outlinedCardColors()
+                                    ) {
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(horizontal = 16.dp, vertical = 14.dp),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Text(
+                                                text = selectedSupplierForEdit?.name ?: "Select Supplier...",
+                                                color = if (selectedSupplierForEdit != null) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                            Icon(Icons.Default.ArrowDropDown, contentDescription = "Select Supplier")
+                                        }
+                                    }
+
+                                    IconButton(
+                                        onClick = {
+                                            newSupplierName = ""
+                                            supplierError = null
+                                            showNewSupplierDialog = true
+                                        },
+                                        colors = IconButtonDefaults.iconButtonColors(
+                                            containerColor = MaterialTheme.colorScheme.primaryContainer
+                                        )
+                                    ) {
+                                        Icon(Icons.Default.Add, contentDescription = "Add Supplier")
+                                    }
+                                }
+                            } else {
+                                Text(
+                                    text = currentProduct.name,
+                                    style = MaterialTheme.typography.headlineSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                                if (!currentProduct.description.isNullOrBlank()) {
+                                    Spacer(modifier = Modifier.height(6.dp))
+                                    Text(
+                                        text = currentProduct.description!!,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(12.dp))
+                            HorizontalDivider()
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            if (!isEditing) {
+                                // Supplier
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(
+                                        text = "Supplier: ",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                    Text(
+                                        text = supplierName,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.secondary
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(6.dp))
+                            }
+
+                            // Last Modified Date & User
+                            val dateFormat = remember { SimpleDateFormat("yyyy-MMM-dd HH:mm", Locale.getDefault()) }
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = "Last Modified: ",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                                Text(
+                                    text = "${dateFormat.format(Date(currentProduct.lastModifiedDate))} by $lastModifiedUserName",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                    }
+                }
+
+                // Variants Header & Content
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Text(
-                            text = "Search",
+                            text = "Product Variants (${if (isEditing) editedVariants.size else currentVariants.size})",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
-            } else {
-                // If user manually switched to Product tab, do not display "Product Details" title
-                Spacer(modifier = Modifier.height(0.dp))
+
+                if (isEditing) {
+                    // Add Variant Button
+                    item {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            TextButton(
+                                onClick = {
+                                    editedVariants = editedVariants + EditVariantState()
+                                },
+                                contentPadding = PaddingValues(horizontal = 0.dp, vertical = 8.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.AddCircle,
+                                    contentDescription = null,
+                                    tint = greenColor,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text("Add Product Variant", color = greenColor, style = MaterialTheme.typography.titleMedium)
+                            }
+                        }
+                    }
+
+                    items(editedVariants) { variantState ->
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "Variant",
+                                        style = MaterialTheme.typography.titleMedium,
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                    IconButton(onClick = {
+                                        editedVariants = editedVariants.filter { it.id != variantState.id }
+                                    }) {
+                                        Icon(Icons.Default.Delete, contentDescription = "Remove Variant", tint = MaterialTheme.colorScheme.error)
+                                    }
+                                }
+
+                                OutlinedTextField(
+                                    value = variantState.variantName,
+                                    onValueChange = { name ->
+                                        editedVariants = editedVariants.map {
+                                            if (it.id == variantState.id) it.copy(variantName = name) else it
+                                        }
+                                    },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    label = { Text("Variant Name") },
+                                    singleLine = true
+                                )
+
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    OutlinedTextField(
+                                        value = variantState.supplierPrice,
+                                        onValueChange = { input ->
+                                            if (input.isEmpty() || input.matches(Regex("^\\d*(\\.\\d{0,2})?$"))) {
+                                                editedVariants = editedVariants.map {
+                                                    if (it.id == variantState.id) it.copy(supplierPrice = input) else it
+                                                }
+                                            }
+                                        },
+                                        modifier = Modifier.weight(1f),
+                                        label = { Text("Supplier Price") },
+                                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                                        singleLine = true
+                                    )
+
+                                    OutlinedTextField(
+                                        value = variantState.unit,
+                                        onValueChange = { unit ->
+                                            editedVariants = editedVariants.map {
+                                                if (it.id == variantState.id) it.copy(unit = unit) else it
+                                            }
+                                        },
+                                        modifier = Modifier.weight(1f),
+                                        label = { Text("Unit") },
+                                        singleLine = true
+                                    )
+                                }
+
+                                OutlinedTextField(
+                                    value = variantState.sellingPrice,
+                                    onValueChange = { input ->
+                                        if (input.isEmpty() || input.matches(Regex("^\\d*(\\.\\d{0,2})?$"))) {
+                                            editedVariants = editedVariants.map {
+                                                if (it.id == variantState.id) it.copy(sellingPrice = input) else it
+                                            }
+                                        }
+                                    },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    label = { Text("Selling Price") },
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                                    singleLine = true
+                                )
+
+                                // Custom Prices Section
+                                if (variantState.customPrices.isNotEmpty()) {
+                                    Text("Custom Prices", style = MaterialTheme.typography.labelMedium)
+                                    variantState.customPrices.forEach { cp ->
+                                        Card(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                                        ) {
+                                            Column(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(12.dp),
+                                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                                            ) {
+                                                Row(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                                    verticalAlignment = Alignment.CenterVertically
+                                                ) {
+                                                    Text("Custom Price Item", style = MaterialTheme.typography.bodySmall)
+                                                    IconButton(onClick = {
+                                                        editedVariants = editedVariants.map { v ->
+                                                            if (v.id == variantState.id) {
+                                                                v.copy(customPrices = v.customPrices.filter { it.id != cp.id })
+                                                            } else v
+                                                        }
+                                                    }) {
+                                                        Icon(Icons.Default.Close, contentDescription = "Remove Custom Price", modifier = Modifier.size(16.dp))
+                                                    }
+                                                }
+
+                                                Row(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                                ) {
+                                                    OutlinedCard(
+                                                        modifier = Modifier
+                                                            .weight(1f)
+                                                            .clickable {
+                                                                activeCustomPriceTarget = Pair(variantState.id, cp.id)
+                                                                showCustomerSearchDialog = true
+                                                            }
+                                                    ) {
+                                                        Row(
+                                                            modifier = Modifier
+                                                                .fillMaxWidth()
+                                                                .padding(horizontal = 12.dp, vertical = 10.dp),
+                                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                                            verticalAlignment = Alignment.CenterVertically
+                                                        ) {
+                                                            Text(
+                                                                text = cp.customer?.name ?: "Select Customer...",
+                                                                style = MaterialTheme.typography.bodyMedium
+                                                            )
+                                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null, modifier = Modifier.size(18.dp))
+                                                        }
+                                                    }
+
+                                                    IconButton(
+                                                        onClick = {
+                                                            activeCustomPriceTarget = Pair(variantState.id, cp.id)
+                                                            newCustomerName = ""
+                                                            customerError = null
+                                                            showNewCustomerDialog = true
+                                                        },
+                                                        modifier = Modifier.size(40.dp)
+                                                    ) {
+                                                        Icon(Icons.Default.Add, contentDescription = "Add Customer", modifier = Modifier.size(18.dp))
+                                                    }
+                                                }
+
+                                                OutlinedTextField(
+                                                    value = cp.price,
+                                                    onValueChange = { input ->
+                                                        if (input.isEmpty() || input.matches(Regex("^\\d*(\\.\\d{0,2})?$"))) {
+                                                            editedVariants = editedVariants.map { v ->
+                                                                if (v.id == variantState.id) {
+                                                                    val updatedCps = v.customPrices.map { c ->
+                                                                        if (c.id == cp.id) c.copy(price = input) else c
+                                                                    }
+                                                                    v.copy(customPrices = updatedCps)
+                                                                } else v
+                                                            }
+                                                        }
+                                                    },
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    label = { Text("Custom Price") },
+                                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                                                    singleLine = true
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+
+                                TextButton(
+                                    onClick = {
+                                        editedVariants = editedVariants.map { v ->
+                                            if (v.id == variantState.id) {
+                                                v.copy(customPrices = v.customPrices + EditCustomPriceState())
+                                            } else v
+                                        }
+                                    },
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.AddCircle,
+                                        contentDescription = null,
+                                        tint = greenColor,
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text("Add Custom Price", color = greenColor)
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    items(currentVariants) { variant ->
+                        VariantDetailCard(
+                            variant = variant,
+                            onShowSupplierHistory = { showSupplierHistVariantId = variant.id },
+                            onShowSellingHistory = { showSellingHistVariantId = variant.id },
+                            onShowCustomerPriceHistory = { vId: String, cId: String, cName: String ->
+                                showCustomerHistTarget = Triple(vId, cId, cName)
+                            }
+                        )
+                    }
+                }
+
+                // View Change History Button (Read Only Mode Only)
+                if (!isEditing) {
+                    item {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        OutlinedButton(
+                            onClick = { showAuditTrailDialog = true },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Icon(Icons.Default.Timeline, contentDescription = null, modifier = Modifier.size(18.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("View Change History", fontWeight = FontWeight.Bold)
+                        }
+                    }
+                }
+
+                // Delete Product Button at bottom of scrollable content (Edit Mode Only)
+                if (isEditing) {
+                    item {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        OutlinedButton(
+                            onClick = { showDeleteConfirmationDialog = true },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.error)
+                        ) {
+                            Icon(Icons.Default.Delete, contentDescription = null, modifier = Modifier.size(18.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Delete Product", fontWeight = FontWeight.Bold)
+                        }
+                    }
+                }
             }
-        },
-        floatingActionButton = {
+
             FloatingActionButton(
                 onClick = {
                     if (isEditing) {
@@ -334,6 +761,9 @@ fun ProductTabContent(
                         isEditing = true
                     }
                 },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp),
                 containerColor = Color(0xFFFFC107), // Yellow / Amber
                 contentColor = Color.Black
             ) {
@@ -341,434 +771,6 @@ fun ProductTabContent(
                     imageVector = if (isEditing) Icons.Default.Save else Icons.Default.Edit,
                     contentDescription = if (isEditing) "Save Product" else "Edit Product"
                 )
-            }
-        }
-    ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = 4.dp, vertical = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            // Product Info Card
-            item {
-                OutlinedCard(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surface),
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                    ) {
-                        if (isEditing) {
-                            OutlinedTextField(
-                                value = editedName,
-                                onValueChange = { editedName = it },
-                                label = { Text("Product Name") },
-                                modifier = Modifier.fillMaxWidth(),
-                                singleLine = true
-                            )
-                            Spacer(modifier = Modifier.height(12.dp))
-                            OutlinedTextField(
-                                value = editedDescription,
-                                onValueChange = { editedDescription = it },
-                                label = { Text("Description") },
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                            Spacer(modifier = Modifier.height(12.dp))
-
-                            // Supplier Dropdown in Edit Mode
-                            Text("Primary Supplier", style = MaterialTheme.typography.labelLarge)
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                OutlinedCard(
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .clickable { showSupplierSearchDialog = true },
-                                    colors = CardDefaults.outlinedCardColors()
-                                ) {
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(horizontal = 16.dp, vertical = 14.dp),
-                                        horizontalArrangement = Arrangement.SpaceBetween,
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        Text(
-                                            text = selectedSupplierForEdit?.name ?: "Select Supplier...",
-                                            color = if (selectedSupplierForEdit != null) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                        Icon(Icons.Default.ArrowDropDown, contentDescription = "Select Supplier")
-                                    }
-                                }
-
-                                IconButton(
-                                    onClick = {
-                                        newSupplierName = ""
-                                        supplierError = null
-                                        showNewSupplierDialog = true
-                                    },
-                                    colors = IconButtonDefaults.iconButtonColors(
-                                        containerColor = MaterialTheme.colorScheme.primaryContainer
-                                    )
-                                ) {
-                                    Icon(Icons.Default.Add, contentDescription = "Add Supplier")
-                                }
-                            }
-                        } else {
-                            Text(
-                                text = currentProduct.name,
-                                style = MaterialTheme.typography.headlineSmall,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                            if (!currentProduct.description.isNullOrBlank()) {
-                                Spacer(modifier = Modifier.height(6.dp))
-                                Text(
-                                    text = currentProduct.description!!,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(12.dp))
-                        HorizontalDivider()
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        if (!isEditing) {
-                            // Supplier
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(
-                                    text = "Supplier: ",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                                Text(
-                                    text = supplierName,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.secondary
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(6.dp))
-                        }
-
-                        // Last Modified Date & User
-                        val dateFormat = remember { SimpleDateFormat("yyyy-MMM-dd HH:mm", Locale.getDefault()) }
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                text = "Last Modified: ",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                            Text(
-                                text = "${dateFormat.format(Date(currentProduct.lastModifiedDate))} by $lastModifiedUserName",
-                                style = MaterialTheme.typography.bodySmall,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-                }
-            }
-
-            // Variants Header & Content
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Product Variants (${if (isEditing) editedVariants.size else currentVariants.size})",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                }
-            }
-
-            if (isEditing) {
-                // Add Variant Button
-                item {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        TextButton(
-                            onClick = {
-                                editedVariants = editedVariants + EditVariantState()
-                            },
-                            contentPadding = PaddingValues(horizontal = 0.dp, vertical = 8.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.AddCircle,
-                                contentDescription = null,
-                                tint = greenColor,
-                                modifier = Modifier.size(20.dp)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("Add Product Variant", color = greenColor, style = MaterialTheme.typography.titleMedium)
-                        }
-                    }
-                }
-
-                items(editedVariants) { variantState ->
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = "Variant",
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                                IconButton(onClick = {
-                                    editedVariants = editedVariants.filter { it.id != variantState.id }
-                                }) {
-                                    Icon(Icons.Default.Delete, contentDescription = "Remove Variant", tint = MaterialTheme.colorScheme.error)
-                                }
-                            }
-
-                            OutlinedTextField(
-                                value = variantState.variantName,
-                                onValueChange = { name ->
-                                    editedVariants = editedVariants.map {
-                                        if (it.id == variantState.id) it.copy(variantName = name) else it
-                                    }
-                                },
-                                modifier = Modifier.fillMaxWidth(),
-                                label = { Text("Variant Name") },
-                                singleLine = true
-                            )
-
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                OutlinedTextField(
-                                    value = variantState.supplierPrice,
-                                    onValueChange = { input ->
-                                        if (input.isEmpty() || input.matches(Regex("^\\d*(\\.\\d{0,2})?$"))) {
-                                            editedVariants = editedVariants.map {
-                                                if (it.id == variantState.id) it.copy(supplierPrice = input) else it
-                                            }
-                                        }
-                                    },
-                                    modifier = Modifier.weight(1f),
-                                    label = { Text("Supplier Price") },
-                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                                    singleLine = true
-                                )
-
-                                OutlinedTextField(
-                                    value = variantState.unit,
-                                    onValueChange = { unit ->
-                                        editedVariants = editedVariants.map {
-                                            if (it.id == variantState.id) it.copy(unit = unit) else it
-                                        }
-                                    },
-                                    modifier = Modifier.weight(1f),
-                                    label = { Text("Unit") },
-                                    singleLine = true
-                                )
-                            }
-
-                            OutlinedTextField(
-                                value = variantState.sellingPrice,
-                                onValueChange = { input ->
-                                    if (input.isEmpty() || input.matches(Regex("^\\d*(\\.\\d{0,2})?$"))) {
-                                        editedVariants = editedVariants.map {
-                                            if (it.id == variantState.id) it.copy(sellingPrice = input) else it
-                                        }
-                                    }
-                                },
-                                modifier = Modifier.fillMaxWidth(),
-                                label = { Text("Selling Price") },
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                                singleLine = true
-                            )
-
-                            // Custom Prices Section
-                            if (variantState.customPrices.isNotEmpty()) {
-                                Text("Custom Prices", style = MaterialTheme.typography.labelMedium)
-                                variantState.customPrices.forEach { cp ->
-                                    Card(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
-                                    ) {
-                                        Column(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(12.dp),
-                                            verticalArrangement = Arrangement.spacedBy(8.dp)
-                                        ) {
-                                            Row(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                horizontalArrangement = Arrangement.SpaceBetween,
-                                                verticalAlignment = Alignment.CenterVertically
-                                            ) {
-                                                Text("Custom Price Item", style = MaterialTheme.typography.bodySmall)
-                                                IconButton(onClick = {
-                                                    editedVariants = editedVariants.map { v ->
-                                                        if (v.id == variantState.id) {
-                                                            v.copy(customPrices = v.customPrices.filter { it.id != cp.id })
-                                                        } else v
-                                                    }
-                                                }) {
-                                                    Icon(Icons.Default.Close, contentDescription = "Remove Custom Price", modifier = Modifier.size(16.dp))
-                                                }
-                                            }
-
-                                            Row(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                verticalAlignment = Alignment.CenterVertically,
-                                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                            ) {
-                                                OutlinedCard(
-                                                    modifier = Modifier
-                                                        .weight(1f)
-                                                        .clickable {
-                                                            activeCustomPriceTarget = Pair(variantState.id, cp.id)
-                                                            showCustomerSearchDialog = true
-                                                        }
-                                                ) {
-                                                    Row(
-                                                        modifier = Modifier
-                                                            .fillMaxWidth()
-                                                            .padding(horizontal = 12.dp, vertical = 10.dp),
-                                                        horizontalArrangement = Arrangement.SpaceBetween,
-                                                        verticalAlignment = Alignment.CenterVertically
-                                                    ) {
-                                                        Text(
-                                                            text = cp.customer?.name ?: "Select Customer...",
-                                                            style = MaterialTheme.typography.bodyMedium
-                                                        )
-                                                        Icon(Icons.Default.ArrowDropDown, contentDescription = null, modifier = Modifier.size(18.dp))
-                                                    }
-                                                }
-
-                                                IconButton(
-                                                    onClick = {
-                                                        activeCustomPriceTarget = Pair(variantState.id, cp.id)
-                                                        newCustomerName = ""
-                                                        customerError = null
-                                                        showNewCustomerDialog = true
-                                                    },
-                                                    modifier = Modifier.size(40.dp)
-                                                ) {
-                                                    Icon(Icons.Default.Add, contentDescription = "Add Customer", modifier = Modifier.size(18.dp))
-                                                }
-                                            }
-
-                                            OutlinedTextField(
-                                                value = cp.price,
-                                                onValueChange = { input ->
-                                                    if (input.isEmpty() || input.matches(Regex("^\\d*(\\.\\d{0,2})?$"))) {
-                                                        editedVariants = editedVariants.map { v ->
-                                                            if (v.id == variantState.id) {
-                                                                val updatedCps = v.customPrices.map { c ->
-                                                                    if (c.id == cp.id) c.copy(price = input) else c
-                                                                }
-                                                                v.copy(customPrices = updatedCps)
-                                                            } else v
-                                                        }
-                                                    }
-                                                },
-                                                modifier = Modifier.fillMaxWidth(),
-                                                label = { Text("Custom Price") },
-                                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                                                singleLine = true
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-
-                            TextButton(
-                                onClick = {
-                                    editedVariants = editedVariants.map { v ->
-                                        if (v.id == variantState.id) {
-                                            v.copy(customPrices = v.customPrices + EditCustomPriceState())
-                                        } else v
-                                    }
-                                },
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.AddCircle,
-                                    contentDescription = null,
-                                    tint = greenColor,
-                                    modifier = Modifier.size(18.dp)
-                                )
-                                Spacer(modifier = Modifier.width(6.dp))
-                                Text("Add Custom Price", color = greenColor)
-                            }
-                        }
-                    }
-                }
-            } else {
-                items(currentVariants) { variant ->
-                    VariantDetailCard(
-                        variant = variant,
-                        onShowSupplierHistory = { showSupplierHistVariantId = variant.id },
-                        onShowSellingHistory = { showSellingHistVariantId = variant.id },
-                        onShowCustomerPriceHistory = { vId: String, cId: String, cName: String ->
-                            showCustomerHistTarget = Triple(vId, cId, cName)
-                        }
-                    )
-                }
-            }
-
-            // View Change History Button (above delete button / at bottom)
-            item {
-                Spacer(modifier = Modifier.height(8.dp))
-                OutlinedButton(
-                    onClick = { showAuditTrailDialog = true },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Icon(Icons.Default.Timeline, contentDescription = null, modifier = Modifier.size(18.dp))
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("View Change History", fontWeight = FontWeight.Bold)
-                }
-            }
-
-            // Delete Product Button at bottom of scrollable content
-            if (isEditing) {
-                item {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    OutlinedButton(
-                        onClick = { showDeleteConfirmationDialog = true },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.error)
-                    ) {
-                        Icon(Icons.Default.Delete, contentDescription = null, modifier = Modifier.size(18.dp))
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Delete Product", fontWeight = FontWeight.Bold)
-                    }
-                    Spacer(modifier = Modifier.height(32.dp))
-                }
             }
         }
     }
