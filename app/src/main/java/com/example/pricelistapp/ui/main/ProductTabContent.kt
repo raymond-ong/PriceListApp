@@ -119,6 +119,11 @@ fun ProductTabContent(
     var selectedSupplierForEdit by remember { mutableStateOf<SupplierEntity?>(null) }
     var editedVariants by remember { mutableStateOf<List<EditVariantState>>(emptyList()) }
 
+    var initialEditedName by remember { mutableStateOf("") }
+    var initialEditedDescription by remember { mutableStateOf("") }
+    var initialSupplierId by remember { mutableStateOf("") }
+    var initialEditedVariants by remember { mutableStateOf<List<EditVariantState>>(emptyList()) }
+
     // Load initial supplier and variants into edit state when editing starts
     LaunchedEffect(isEditing) {
         if (isEditing) {
@@ -152,6 +157,10 @@ fun ProductTabContent(
                 withContext(Dispatchers.Main) {
                     selectedSupplierForEdit = sup
                     editedVariants = vList
+                    initialEditedName = currentProduct.name
+                    initialEditedDescription = currentProduct.description ?: ""
+                    initialSupplierId = currentProduct.supplierId
+                    initialEditedVariants = vList
                 }
             }
         }
@@ -171,6 +180,7 @@ fun ProductTabContent(
 
     var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
     var showAuditTrailDialog by remember { mutableStateOf(false) }
+    var showDiscardConfirmationDialog by remember { mutableStateOf(false) }
 
     // History popup states
     var showSupplierHistVariantId by remember { mutableStateOf<String?>(null) }
@@ -215,7 +225,7 @@ fun ProductTabContent(
         ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(start = 4.dp, top = 8.dp, end = 4.dp, bottom = 80.dp),
+                contentPadding = PaddingValues(start = 4.dp, top = 8.dp, end = 4.dp, bottom = 96.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 // Product Info Card
@@ -640,139 +650,196 @@ fun ProductTabContent(
                 }
             }
 
-            FloatingActionButton(
-                onClick = {
-                    if (isEditing) {
-                        // Save changes
-                        coroutineScope.launch(Dispatchers.IO) {
-                            val trimmedName = editedName.trim()
-                            if (trimmedName.isEmpty()) {
-                                withContext(Dispatchers.Main) {
-                                    Toast.makeText(context, "Product name cannot be empty", Toast.LENGTH_SHORT).show()
-                                }
-                                return@launch
-                            }
-                            if (selectedSupplierForEdit == null) {
-                                withContext(Dispatchers.Main) {
-                                    Toast.makeText(context, "Please select a supplier", Toast.LENGTH_SHORT).show()
-                                }
-                                return@launch
-                            }
-
-                            val oldSup = productDao.getSupplierById(currentProduct.supplierId)
-                            val oldSupName = oldSup?.name ?: "Unknown"
-
-                            // Generate audit trail changes before updating
-                            val auditChanges = generateAuditChanges(
-                                oldProduct = currentProduct,
-                                oldVariants = currentVariants,
-                                oldSupplierName = oldSupName,
-                                newProductName = trimmedName,
-                                newDescription = editedDescription.trim().ifEmpty { null },
-                                newSupplierId = selectedSupplierForEdit!!.id,
-                                newSupplierName = selectedSupplierForEdit!!.name,
-                                newVariants = editedVariants,
-                                productDao = productDao
-                            )
-
-                            val now = System.currentTimeMillis()
-                            val updatedProduct = currentProduct.copy(
-                                name = trimmedName,
-                                description = editedDescription.trim().ifEmpty { null },
-                                supplierId = selectedSupplierForEdit!!.id,
-                                lastModifiedDate = now,
-                                lastModifiedUserId = user.id
-                            )
-                            productDao.updateProduct(updatedProduct)
-
-                            if (auditChanges.isNotEmpty()) {
-                                val auditTrail = ProductAuditTrailEntity(
-                                    date = now,
-                                    userId = user.id,
-                                    productId = updatedProduct.id,
-                                    changeDetailsJson = AuditJsonConverter.toJson(auditChanges)
-                                )
-                                productDao.insertAuditTrail(auditTrail)
-                            }
-
-                            productDao.deleteVariantsForProduct(updatedProduct.id)
-                            val savedVariants = mutableListOf<ProductVariantEntity>()
-
-                            for (v in editedVariants) {
-                                val variantId = v.variantId.ifBlank { UlidGenerator.generate() }
-                                val variantEntity = ProductVariantEntity(
-                                    id = variantId,
-                                    productId = updatedProduct.id,
-                                    name = v.variantName.ifBlank { trimmedName },
-                                    supplierPrice = v.supplierPrice.toDoubleOrNull() ?: 0.0,
-                                    unit = v.unit.ifBlank { "pcs" },
-                                    sellingPrice = v.sellingPrice.toDoubleOrNull() ?: 0.0
-                                )
-                                productDao.insertVariant(variantEntity)
-                                savedVariants.add(variantEntity)
-
-                                // Insert new supplier price history entry
-                                val supHist = SupplierPriceHistEntity(
-                                    userId = user.id,
-                                    date = now,
-                                    variantId = variantEntity.id,
-                                    price = variantEntity.supplierPrice
-                                )
-                                productDao.insertSupplierPriceHist(supHist)
-
-                                // Insert new default selling price history entry
-                                val defaultCustHist = CustomerPriceHistEntity(
-                                    userId = user.id,
-                                    date = now,
-                                    variantId = variantEntity.id,
-                                    customerId = null,
-                                    isDeleted = 0,
-                                    isDefaultPrice = 1,
-                                    price = variantEntity.sellingPrice
-                                )
-                                productDao.insertCustomerPriceHist(defaultCustHist)
-
-                                // Insert new custom price history entry for each custom price
-                                for (cp in v.customPrices) {
-                                    if (cp.customer != null && cp.price.isNotBlank()) {
-                                        val custHist = CustomerPriceHistEntity(
-                                            userId = user.id,
-                                            date = now,
-                                            variantId = variantEntity.id,
-                                            customerId = cp.customer.id,
-                                            isDeleted = 0,
-                                            isDefaultPrice = 0,
-                                            price = cp.price.toDoubleOrNull() ?: 0.0
-                                        )
-                                        productDao.insertCustomerPriceHist(custHist)
-                                    }
-                                }
-                            }
-
-                            withContext(Dispatchers.Main) {
-                                currentProduct = updatedProduct
-                                currentVariants = savedVariants
-                                supplierName = selectedSupplierForEdit?.name ?: "Unknown Supplier"
-                                isEditing = false
-                                Toast.makeText(context, "Product updated successfully", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    } else {
-                        isEditing = true
-                    }
-                },
+            // Stacked FABs for Edit / Save / Cancel
+            Column(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(16.dp),
-                containerColor = Color(0xFFFFC107), // Yellow / Amber
-                contentColor = Color.Black
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalAlignment = Alignment.End
             ) {
-                Icon(
-                    imageVector = if (isEditing) Icons.Default.Save else Icons.Default.Edit,
-                    contentDescription = if (isEditing) "Save Product" else "Edit Product"
-                )
+                if (isEditing) {
+                    // Cancel / Discard FAB (above Save FAB)
+                    FloatingActionButton(
+                        onClick = {
+                            val hasChanges = editedName.trim() != initialEditedName.trim() ||
+                                    editedDescription.trim() != initialEditedDescription.trim() ||
+                                    selectedSupplierForEdit?.id != initialSupplierId ||
+                                    editedVariants != initialEditedVariants
+                            if (hasChanges) {
+                                showDiscardConfirmationDialog = true
+                            } else {
+                                isEditing = false
+                            }
+                        },
+                        containerColor = Color.Gray,
+                        contentColor = Color.White,
+                        modifier = Modifier.size(48.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Cancel Editing"
+                        )
+                    }
+                }
+
+                // Save (in edit mode) or Edit (in read-only mode) FAB
+                FloatingActionButton(
+                    onClick = {
+                        if (isEditing) {
+                            // Save changes
+                            coroutineScope.launch(Dispatchers.IO) {
+                                val trimmedName = editedName.trim()
+                                if (trimmedName.isEmpty()) {
+                                    withContext(Dispatchers.Main) {
+                                        Toast.makeText(context, "Product name cannot be empty", Toast.LENGTH_SHORT).show()
+                                    }
+                                    return@launch
+                                }
+                                if (selectedSupplierForEdit == null) {
+                                    withContext(Dispatchers.Main) {
+                                        Toast.makeText(context, "Please select a supplier", Toast.LENGTH_SHORT).show()
+                                    }
+                                    return@launch
+                                }
+
+                                val oldSup = productDao.getSupplierById(currentProduct.supplierId)
+                                val oldSupName = oldSup?.name ?: "Unknown"
+
+                                // Generate audit trail changes before updating
+                                val auditChanges = generateAuditChanges(
+                                    oldProduct = currentProduct,
+                                    oldVariants = currentVariants,
+                                    oldSupplierName = oldSupName,
+                                    newProductName = trimmedName,
+                                    newDescription = editedDescription.trim().ifEmpty { null },
+                                    newSupplierId = selectedSupplierForEdit!!.id,
+                                    newSupplierName = selectedSupplierForEdit!!.name,
+                                    newVariants = editedVariants,
+                                    productDao = productDao
+                                )
+
+                                val now = System.currentTimeMillis()
+                                val updatedProduct = currentProduct.copy(
+                                    name = trimmedName,
+                                    description = editedDescription.trim().ifEmpty { null },
+                                    supplierId = selectedSupplierForEdit!!.id,
+                                    lastModifiedDate = now,
+                                    lastModifiedUserId = user.id
+                                )
+                                productDao.updateProduct(updatedProduct)
+
+                                if (auditChanges.isNotEmpty()) {
+                                    val auditTrail = ProductAuditTrailEntity(
+                                        date = now,
+                                        userId = user.id,
+                                        productId = updatedProduct.id,
+                                        changeDetailsJson = AuditJsonConverter.toJson(auditChanges)
+                                    )
+                                    productDao.insertAuditTrail(auditTrail)
+                                }
+
+                                productDao.deleteVariantsForProduct(updatedProduct.id)
+                                val savedVariants = mutableListOf<ProductVariantEntity>()
+
+                                for (v in editedVariants) {
+                                    val variantId = v.variantId.ifBlank { UlidGenerator.generate() }
+                                    val variantEntity = ProductVariantEntity(
+                                        id = variantId,
+                                        productId = updatedProduct.id,
+                                        name = v.variantName.ifBlank { trimmedName },
+                                        supplierPrice = v.supplierPrice.toDoubleOrNull() ?: 0.0,
+                                        unit = v.unit.ifBlank { "pcs" },
+                                        sellingPrice = v.sellingPrice.toDoubleOrNull() ?: 0.0
+                                    )
+                                    productDao.insertVariant(variantEntity)
+                                    savedVariants.add(variantEntity)
+
+                                    // Insert new supplier price history entry
+                                    val supHist = SupplierPriceHistEntity(
+                                        userId = user.id,
+                                        date = now,
+                                        variantId = variantEntity.id,
+                                        price = variantEntity.supplierPrice
+                                    )
+                                    productDao.insertSupplierPriceHist(supHist)
+
+                                    // Insert new default selling price history entry
+                                    val defaultCustHist = CustomerPriceHistEntity(
+                                        userId = user.id,
+                                        date = now,
+                                        variantId = variantEntity.id,
+                                        customerId = null,
+                                        isDeleted = 0,
+                                        isDefaultPrice = 1,
+                                        price = variantEntity.sellingPrice
+                                    )
+                                    productDao.insertCustomerPriceHist(defaultCustHist)
+
+                                    // Insert new custom price history entry for each custom price
+                                    for (cp in v.customPrices) {
+                                        if (cp.customer != null && cp.price.isNotBlank()) {
+                                            val custHist = CustomerPriceHistEntity(
+                                                userId = user.id,
+                                                date = now,
+                                                variantId = variantEntity.id,
+                                                customerId = cp.customer.id,
+                                                isDeleted = 0,
+                                                isDefaultPrice = 0,
+                                                price = cp.price.toDoubleOrNull() ?: 0.0
+                                            )
+                                            productDao.insertCustomerPriceHist(custHist)
+                                        }
+                                    }
+                                }
+
+                                withContext(Dispatchers.Main) {
+                                    currentProduct = updatedProduct
+                                    currentVariants = savedVariants
+                                    supplierName = selectedSupplierForEdit?.name ?: "Unknown Supplier"
+                                    isEditing = false
+                                    Toast.makeText(context, "Product updated successfully", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        } else {
+                            isEditing = true
+                        }
+                    },
+                    containerColor = if (isEditing) Color(0xFF2E7D32) else Color(0xFFFFC107), // Greenish when editing, Yellow when read-only
+                    contentColor = Color.White
+                ) {
+                    Icon(
+                        imageVector = if (isEditing) Icons.Default.Save else Icons.Default.Edit,
+                        contentDescription = if (isEditing) "Save Product" else "Edit Product"
+                    )
+                }
             }
         }
+    }
+
+    // --- Discard Changes Confirmation Dialog ---
+    if (showDiscardConfirmationDialog) {
+        AlertDialog(
+            onDismissRequest = { showDiscardConfirmationDialog = false },
+            title = { Text("Discard Changes?") },
+            text = { Text("You have unsaved changes. Are you sure you want to discard them?") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showDiscardConfirmationDialog = false
+                        isEditing = false
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                ) {
+                    Text("Discard")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDiscardConfirmationDialog = false }) {
+                    Text("Continue Editing")
+                }
+            }
+        )
     }
 
     // --- Supplier Search Dialog ---
