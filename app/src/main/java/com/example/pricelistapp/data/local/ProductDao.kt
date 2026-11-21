@@ -28,8 +28,11 @@ interface ProductDao {
     suspend fun updateVariant(variant: ProductVariantEntity)
 
     @Transaction
-    @Query("SELECT * FROM product")
+    @Query("SELECT * FROM product WHERE is_deleted = 0")
     suspend fun getAllProductsWithVariants(): List<ProductWithVariants>
+
+    @Query("DELETE FROM product_variant WHERE product_id = :productId")
+    suspend fun deleteVariantsForProduct(productId: String)
 
     @Query("SELECT * FROM supplier_price_hist WHERE variant_id = :variantId ORDER BY date DESC")
     suspend fun getSupplierPriceHistoryForVariant(variantId: String): List<SupplierPriceHistEntity>

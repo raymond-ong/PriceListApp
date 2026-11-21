@@ -280,7 +280,8 @@ fun MainScreen(
                             currentRole = currentRole,
                             productWithVariants = selectedProduct,
                             isFromSearch = isFromSearch,
-                            onBackToSearch = { selectedTab = MainTab.SEARCH }
+                            onBackToSearch = { selectedTab = MainTab.SEARCH },
+                            onProductDeleted = { selectedProduct = null }
                         )
                         MainTab.ADD -> AddTabContent(user = user, currentRole = currentRole)
                         MainTab.SETTINGS -> SettingsTabContent(user = user, currentRole = currentRole)

@@ -203,5 +203,38 @@ e. Product Variant Card List, each card will have the following controls:
  Remember in the DB schema design I have asked previously, there is a dedicated table for the selling price history.
 
 
- --- TODO: Audit Trail ---
- --- TODO: Date Modified ---
+ 
+
+[7.1]
+For the Product Page, if the user manually switches to the Product tab, no need to display the "Product Details" Since it is pretty obvious that the page is displaying the details of the previously selected product.
+
+[8] Product Page Edit Mode
+For the Edit Mode of the Product Page, you already implemented some basic functionalities. Here are additional requirements.
+A. The Supplier must also be editable. Please make it behave similarly as in the Add Product Page, wherein it is displayed as a dropdown that when clicked, will popup a dialog for the user to choose from the most recent 5 suppliers/search/add new supplier.
+There must also be a plus + button to the right of the dropdown for the user to add a new supplier.
+
+B. All the Product Variant fields must also be editable and delete-able, similar to the one in the Add Prodcuct screen.
+The user must also be able to add a new variant.
+The Custom prices under the Product Variant must also be editable, delete-able.
+The user must also be able to add a new custom price.
+
+C. The product must also be deletable.
+I don't want this to be easily deleted, so I am thining of adding the Delete button at the bottom most part of the scrollable content. Please issue a confirmation dialog when the user clicks the Delete button. If the user confirms the deletion, please do a soft delete in the database only. The Product View then shows the default message of asking the user to go to the Search Tab to open the Product Details.
+
+D. When the user Clicks on Save, please update the last modified date and last modified user.
+
+[8.1]
+If I modify the default Supplier Price and default Selling Price, my expectation is that a new entry shall be added to the database [supplier_price_hist] and [customer_price_hist] for the default price. 
+Then, in the Read Only mode, when I click on the historical prices, I expect to see that previous price listed.
+For the Selling Price history, only show the default selling prices, do not include custom selling prices for this variant.
+Right now, I think the price in [supplier_price_hist] and [customer_price_hist] are simply updated.
+In Read Only mode, it should display the latest price.
+
+Additionally, in the Product's Read Only mode, I forgot to mention previously that in the Product Variant card, the custom prices must also be listed
+
+For the custom price updated by the user in the Edit Mode, a new [customer_price_hist] record in the database must also be added for this variant/customer.
+In Read Only mode, there must also be a similar button for showing the historical prices for the selected variant and customer.
+
+
+
+--- TODO: Audit Trail ---

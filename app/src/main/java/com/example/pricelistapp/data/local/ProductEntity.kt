@@ -15,5 +15,9 @@ data class ProductEntity(
     @ColumnInfo(name = "supplier_id")
     val supplierId: String,
     @ColumnInfo(name = "last_modified_date")
-    val lastModifiedDate: Long = System.currentTimeMillis()
+    val lastModifiedDate: Long = System.currentTimeMillis(),
+    @ColumnInfo(name = "last_modified_user_id")
+    val lastModifiedUserId: String? = null,
+    @ColumnInfo(name = "is_deleted")
+    val isDeleted: Int = 0
 )
