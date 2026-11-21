@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -144,7 +145,8 @@ fun AddTabContent(
             label = { Text("Product Name") },
             singleLine = false,
             minLines = 1,
-            maxLines = Int.MAX_VALUE
+            maxLines = Int.MAX_VALUE,
+            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
         )
 
         // 4. Description Textbox
@@ -155,7 +157,8 @@ fun AddTabContent(
             label = { Text("Description") },
             singleLine = false,
             minLines = 1,
-            maxLines = Int.MAX_VALUE
+            maxLines = Int.MAX_VALUE,
+            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
         )
 
         // 5. Supplier Dropdown
@@ -258,7 +261,8 @@ fun AddTabContent(
                         label = { Text("Variant Name") },
                         singleLine = false,
                         minLines = 1,
-                        maxLines = Int.MAX_VALUE
+                        maxLines = Int.MAX_VALUE,
+                        keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
                     )
 
                     Row(
@@ -285,7 +289,8 @@ fun AddTabContent(
                             onValueChange = { viewModel.updateVariantUnit(variant.id, it) },
                             modifier = Modifier.weight(1f),
                             label = { Text("Unit") },
-                            singleLine = true
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
                         )
                     }
 

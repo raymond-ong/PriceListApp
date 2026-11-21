@@ -23,6 +23,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -246,14 +247,16 @@ fun ProductTabContent(
                                     onValueChange = { editedName = it },
                                     label = { Text("Product Name") },
                                     modifier = Modifier.fillMaxWidth(),
-                                    singleLine = true
+                                    singleLine = true,
+                                    keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
                                 )
                                 Spacer(modifier = Modifier.height(12.dp))
                                 OutlinedTextField(
                                     value = editedDescription,
                                     onValueChange = { editedDescription = it },
                                     label = { Text("Description") },
-                                    modifier = Modifier.fillMaxWidth()
+                                    modifier = Modifier.fillMaxWidth(),
+                                    keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
                                 )
                                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -436,7 +439,8 @@ fun ProductTabContent(
                                     },
                                     modifier = Modifier.fillMaxWidth(),
                                     label = { Text("Variant Name") },
-                                    singleLine = true
+                                    singleLine = true,
+                                    keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
                                 )
 
                                 Row(
@@ -467,7 +471,8 @@ fun ProductTabContent(
                                         },
                                         modifier = Modifier.weight(1f),
                                         label = { Text("Unit") },
-                                        singleLine = true
+                                        singleLine = true,
+                                        keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
                                     )
                                 }
 
