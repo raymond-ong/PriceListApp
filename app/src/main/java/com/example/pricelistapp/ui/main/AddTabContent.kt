@@ -137,32 +137,26 @@ fun AddTabContent(
         }
 
         // 3. Product Textbox
-        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text("Product Name", style = MaterialTheme.typography.labelLarge)
-            OutlinedTextField(
-                value = viewModel.productName,
-                onValueChange = { viewModel.updateProductName(it) },
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Enter product name") },
-                singleLine = false,
-                minLines = 1,
-                maxLines = Int.MAX_VALUE
-            )
-        }
+        OutlinedTextField(
+            value = viewModel.productName,
+            onValueChange = { viewModel.updateProductName(it) },
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text("Product Name") },
+            singleLine = false,
+            minLines = 1,
+            maxLines = Int.MAX_VALUE
+        )
 
         // 4. Description Textbox
-        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text("Description", style = MaterialTheme.typography.labelLarge)
-            OutlinedTextField(
-                value = viewModel.description,
-                onValueChange = { viewModel.updateDescription(it) },
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Enter description (optional)") },
-                singleLine = false,
-                minLines = 1,
-                maxLines = Int.MAX_VALUE
-            )
-        }
+        OutlinedTextField(
+            value = viewModel.description,
+            onValueChange = { viewModel.updateDescription(it) },
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text("Description") },
+            singleLine = false,
+            minLines = 1,
+            maxLines = Int.MAX_VALUE
+        )
 
         // 5. Supplier Dropdown
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {

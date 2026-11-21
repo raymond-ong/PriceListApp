@@ -12,6 +12,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -23,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.example.pricelistapp.data.local.*
@@ -168,6 +170,7 @@ fun ProductTabContent(
     var activeCustomPriceTarget by remember { mutableStateOf<Pair<String, String>?>(null) } // (variantStateId, customPriceId)
 
     var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
+    var showAuditTrailDialog by remember { mutableStateOf(false) }
 
     // History popup states
     var showSupplierHistVariantId by remember { mutableStateOf<String?>(null) }
@@ -229,6 +232,22 @@ fun ProductTabContent(
                                 return@launch
                             }
 
+                            val oldSup = productDao.getSupplierById(currentProduct.supplierId)
+                            val oldSupName = oldSup?.name ?: "Unknown"
+
+                            // Generate audit trail changes before updating
+                            val auditChanges = generateAuditChanges(
+                                oldProduct = currentProduct,
+                                oldVariants = currentVariants,
+                                oldSupplierName = oldSupName,
+                                newProductName = trimmedName,
+                                newDescription = editedDescription.trim().ifEmpty { null },
+                                newSupplierId = selectedSupplierForEdit!!.id,
+                                newSupplierName = selectedSupplierForEdit!!.name,
+                                newVariants = editedVariants,
+                                productDao = productDao
+                            )
+
                             val now = System.currentTimeMillis()
                             val updatedProduct = currentProduct.copy(
                                 name = trimmedName,
@@ -238,6 +257,16 @@ fun ProductTabContent(
                                 lastModifiedUserId = user.id
                             )
                             productDao.updateProduct(updatedProduct)
+
+                            if (auditChanges.isNotEmpty()) {
+                                val auditTrail = ProductAuditTrailEntity(
+                                    date = now,
+                                    userId = user.id,
+                                    productId = updatedProduct.id,
+                                    changeDetailsJson = AuditJsonConverter.toJson(auditChanges)
+                                )
+                                productDao.insertAuditTrail(auditTrail)
+                            }
 
                             productDao.deleteVariantsForProduct(updatedProduct.id)
                             val savedVariants = mutableListOf<ProductVariantEntity>()
@@ -704,10 +733,23 @@ fun ProductTabContent(
                         variant = variant,
                         onShowSupplierHistory = { showSupplierHistVariantId = variant.id },
                         onShowSellingHistory = { showSellingHistVariantId = variant.id },
-                        onShowCustomerPriceHistory = { vId, cId, cName ->
+                        onShowCustomerPriceHistory = { vId: String, cId: String, cName: String ->
                             showCustomerHistTarget = Triple(vId, cId, cName)
                         }
                     )
+                }
+            }
+
+            // View Change History Button (above delete button / at bottom)
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedButton(
+                    onClick = { showAuditTrailDialog = true },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(Icons.Default.Timeline, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("View Change History", fontWeight = FontWeight.Bold)
                 }
             }
 
@@ -1188,6 +1230,14 @@ fun ProductTabContent(
         )
     }
 
+    // Audit Trail Dialog Popup
+    if (showAuditTrailDialog) {
+        AuditTrailDialog(
+            productId = currentProduct.id,
+            onDismiss = { showAuditTrailDialog = false }
+        )
+    }
+
     // Supplier Price History Dialog Popup
     if (showSupplierHistVariantId != null) {
         SupplierPriceHistoryDialog(
@@ -1215,6 +1265,286 @@ fun ProductTabContent(
             customerName = showCustomerHistTarget!!.third,
             onDismiss = { showCustomerHistTarget = null }
         )
+    }
+}
+
+suspend fun generateAuditChanges(
+    oldProduct: ProductEntity,
+    oldVariants: List<ProductVariantEntity>,
+    oldSupplierName: String,
+    newProductName: String,
+    newDescription: String?,
+    newSupplierId: String,
+    newSupplierName: String,
+    newVariants: List<EditVariantState>,
+    productDao: ProductDao
+): List<AuditChangeRecord> {
+    val changes = mutableListOf<AuditChangeRecord>()
+
+    if (oldProduct.name != newProductName) {
+        changes.add(AuditChangeRecord(fieldName = "Product Name", prevValue = oldProduct.name, newValue = newProductName))
+    }
+
+    val oldDesc = oldProduct.description ?: ""
+    val newDesc = newDescription ?: ""
+    if (oldDesc != newDesc) {
+        changes.add(AuditChangeRecord(fieldName = "Description", prevValue = oldDesc.ifEmpty { "(none)" }, newValue = newDesc.ifEmpty { "(none)" }))
+    }
+
+    if (oldProduct.supplierId != newSupplierId) {
+        changes.add(AuditChangeRecord(fieldName = "Supplier", prevValue = oldSupplierName, newValue = newSupplierName))
+    }
+
+    val oldVariantsMap = oldVariants.associateBy { it.id }
+    val handledOldVariantIds = mutableSetOf<String>()
+
+    for (newV in newVariants) {
+        if (newV.variantId.isBlank() || !oldVariantsMap.containsKey(newV.variantId)) {
+            val vName = newV.variantName.ifBlank { newProductName }
+            changes.add(AuditChangeRecord(fieldName = "Variant Added", prevValue = null, newValue = vName))
+            changes.add(AuditChangeRecord(fieldName = "Supplier Price ($vName)", prevValue = null, newValue = newV.supplierPrice.ifBlank { "0.0" }))
+            changes.add(AuditChangeRecord(fieldName = "Unit ($vName)", prevValue = null, newValue = newV.unit.ifBlank { "pcs" }))
+            changes.add(AuditChangeRecord(fieldName = "Selling Price ($vName)", prevValue = null, newValue = newV.sellingPrice.ifBlank { "0.0" }))
+            for (cp in newV.customPrices) {
+                if (cp.customer != null && cp.price.isNotBlank()) {
+                    changes.add(AuditChangeRecord(fieldName = "Custom Price ($vName - ${cp.customer.name})", prevValue = null, newValue = cp.price))
+                }
+            }
+        } else {
+            val oldV = oldVariantsMap[newV.variantId]!!
+            handledOldVariantIds.add(oldV.id)
+
+            val vName = newV.variantName.ifBlank { newProductName }
+            if (oldV.name != vName) {
+                changes.add(AuditChangeRecord(variantId = oldV.id, fieldName = "Variant Name", prevValue = oldV.name, newValue = vName))
+            }
+            val newSupPrice = newV.supplierPrice.toDoubleOrNull() ?: 0.0
+            if (oldV.supplierPrice != newSupPrice) {
+                changes.add(AuditChangeRecord(variantId = oldV.id, fieldName = "Supplier Price ($vName)", prevValue = oldV.supplierPrice.toString(), newValue = newSupPrice.toString()))
+            }
+            if (oldV.unit != newV.unit) {
+                changes.add(AuditChangeRecord(variantId = oldV.id, fieldName = "Unit ($vName)", prevValue = oldV.unit, newValue = newV.unit))
+            }
+            val newSellPrice = newV.sellingPrice.toDoubleOrNull() ?: 0.0
+            if (oldV.sellingPrice != newSellPrice) {
+                changes.add(AuditChangeRecord(variantId = oldV.id, fieldName = "Selling Price ($vName)", prevValue = oldV.sellingPrice.toString(), newValue = newSellPrice.toString()))
+            }
+
+            // Custom prices comparison
+            val oldCustHist = productDao.getCustomerPriceHistoryForVariant(oldV.id)
+            val oldCustPrices = mutableMapOf<String, Double>()
+            for (h in oldCustHist) {
+                if (h.customerId != null && !oldCustPrices.containsKey(h.customerId)) {
+                    if (h.isDeleted == 0) {
+                        oldCustPrices[h.customerId] = h.price
+                    }
+                }
+            }
+
+            val newCustPrices = mutableMapOf<String, Double>()
+            val newCustEntities = mutableMapOf<String, String>()
+            for (cp in newV.customPrices) {
+                if (cp.customer != null && cp.price.isNotBlank()) {
+                    val pVal = cp.price.toDoubleOrNull() ?: 0.0
+                    newCustPrices[cp.customer.id] = pVal
+                    newCustEntities[cp.customer.id] = cp.customer.name
+                }
+            }
+
+            for ((custId, newPrice) in newCustPrices) {
+                val custName = newCustEntities[custId] ?: "Customer"
+                val oldPrice = oldCustPrices[custId]
+                if (oldPrice == null) {
+                    changes.add(AuditChangeRecord(variantId = oldV.id, customerId = custId, fieldName = "Custom Price ($vName - $custName)", prevValue = null, newValue = newPrice.toString()))
+                } else if (oldPrice != newPrice) {
+                    changes.add(AuditChangeRecord(variantId = oldV.id, customerId = custId, fieldName = "Custom Price ($vName - $custName)", prevValue = oldPrice.toString(), newValue = newPrice.toString()))
+                }
+            }
+
+            for ((custId, oldPrice) in oldCustPrices) {
+                if (!newCustPrices.containsKey(custId)) {
+                    val cust = productDao.getCustomerById(custId)
+                    val custName = cust?.name ?: "Customer"
+                    changes.add(AuditChangeRecord(variantId = oldV.id, customerId = custId, fieldName = "Custom Price ($vName - $custName)", prevValue = oldPrice.toString(), newValue = "Removed"))
+                }
+            }
+        }
+    }
+
+    for (oldV in oldVariants) {
+        if (!handledOldVariantIds.contains(oldV.id)) {
+            changes.add(AuditChangeRecord(variantId = oldV.id, fieldName = "Variant Removed", prevValue = oldV.name, newValue = null))
+        }
+    }
+
+    return changes
+}
+
+@Composable
+fun AuditTrailDialog(
+    productId: String,
+    onDismiss: () -> Unit
+) {
+    val context = LocalContext.current
+    val productDao = remember { AppDatabase.getInstance(context).productDao() }
+    var auditList by remember { mutableStateOf<List<Pair<ProductAuditTrailEntity, String>>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+
+    LaunchedEffect(productId) {
+        withContext(Dispatchers.IO) {
+            val list = productDao.getAuditTrailForProduct(productId)
+            val result = list.map { audit ->
+                val userObj = productDao.getUserById(audit.userId)
+                val userName = userObj?.userName ?: "System"
+                audit to userName
+            }
+            withContext(Dispatchers.Main) {
+                auditList = result
+                isLoading = false
+            }
+        }
+    }
+
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.surface,
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.8f)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp)
+            ) {
+                Text(
+                    text = "Product Change History",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                HorizontalDivider()
+                Spacer(modifier = Modifier.height(12.dp))
+
+                if (isLoading) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+                } else if (auditList.isEmpty()) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text("No change history found.", style = MaterialTheme.typography.bodyMedium)
+                    }
+                } else {
+                    val dateFormat = remember { SimpleDateFormat("yyyy-MMM-dd HH:mm", Locale.getDefault()) }
+
+                    LazyColumn(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        items(auditList) { (audit, userName) ->
+                            val changes = remember(audit.changeDetailsJson) {
+                                AuditJsonConverter.fromJson(audit.changeDetailsJson)
+                            }
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(12.dp),
+                                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                                ) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Text(
+                                            text = dateFormat.format(Date(audit.date)),
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            fontWeight = FontWeight.Bold,
+                                            color = MaterialTheme.colorScheme.primary
+                                        )
+                                        Text(
+                                            text = "By: $userName",
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+
+                                    HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+
+                                    changes.forEach { change ->
+                                        Column(modifier = Modifier.fillMaxWidth()) {
+                                            Text(
+                                                text = change.fieldName,
+                                                style = MaterialTheme.typography.labelMedium,
+                                                fontWeight = FontWeight.Bold,
+                                                color = MaterialTheme.colorScheme.secondary
+                                            )
+                                            Spacer(modifier = Modifier.height(2.dp))
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                            ) {
+                                                if (change.prevValue != null) {
+                                                    Text(
+                                                        text = change.prevValue,
+                                                        style = MaterialTheme.typography.bodyMedium,
+                                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                        textDecoration = TextDecoration.LineThrough,
+                                                        modifier = Modifier.weight(1f)
+                                                    )
+                                                    Icon(
+                                                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                                                        contentDescription = "to",
+                                                        modifier = Modifier.size(14.dp),
+                                                        tint = MaterialTheme.colorScheme.primary
+                                                    )
+                                                    if (change.newValue != null) {
+                                                        Text(
+                                                            text = change.newValue,
+                                                            style = MaterialTheme.typography.bodyMedium,
+                                                            fontWeight = FontWeight.SemiBold,
+                                                            color = MaterialTheme.colorScheme.onSurface,
+                                                            modifier = Modifier.weight(1f)
+                                                        )
+                                                    }
+                                                } else {
+                                                    if (change.newValue != null) {
+                                                        Text(
+                                                            text = change.newValue,
+                                                            style = MaterialTheme.typography.bodyMedium,
+                                                            fontWeight = FontWeight.SemiBold,
+                                                            color = MaterialTheme.colorScheme.onSurface,
+                                                            modifier = Modifier.fillMaxWidth()
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+                Button(
+                    onClick = onDismiss,
+                    modifier = Modifier.align(Alignment.End)
+                ) {
+                    Text("Close")
+                }
+            }
+        }
     }
 }
 

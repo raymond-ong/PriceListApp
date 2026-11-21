@@ -44,3 +44,18 @@
 - customer_id
 - is_deleted
 - is_default_price
+
+----------------------
+[product_audit_trail]
+- id (ulid)
+- date
+- user
+- product_id
+- change_details (json column to store all changes. This shall be an array of json records)
+
+Fields inside change_details:
+-- variant_id (nullable)
+-- customer_id (nullable)
+-- field_name
+-- prev_value (nullable)
+-- new_value

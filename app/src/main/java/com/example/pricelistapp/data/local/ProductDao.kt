@@ -48,4 +48,10 @@ interface ProductDao {
 
     @Query("SELECT * FROM users WHERE id = :userId")
     suspend fun getUserById(userId: String): User?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAuditTrail(audit: ProductAuditTrailEntity)
+
+    @Query("SELECT * FROM product_audit_trail WHERE product_id = :productId ORDER BY date DESC")
+    suspend fun getAuditTrailForProduct(productId: String): List<ProductAuditTrailEntity>
 }

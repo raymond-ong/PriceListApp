@@ -15,7 +15,8 @@ import androidx.room.RoomDatabase
         ProductEntity::class,
         ProductVariantEntity::class,
         SupplierPriceHistEntity::class,
-        CustomerPriceHistEntity::class
+        CustomerPriceHistEntity::class,
+        ProductAuditTrailEntity::class
     ],
     version = 7,
     exportSchema = false

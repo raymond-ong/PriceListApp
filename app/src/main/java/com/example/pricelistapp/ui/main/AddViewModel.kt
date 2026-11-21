@@ -267,12 +267,41 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
                             variantId = variantEntity.id,
                             customerId = cp.customer.id,
                             isDeleted = 0,
-                            isDefaultPrice = 0
+                            isDefaultPrice = 0,
+                            price = cp.price.toDoubleOrNull() ?: 0.0
                         )
                         productDao.insertCustomerPriceHist(custHist)
                     }
                 }
             }
+
+            val auditChanges = mutableListOf<AuditChangeRecord>()
+            auditChanges.add(AuditChangeRecord(fieldName = "Product Name", prevValue = null, newValue = trimmedName))
+            if (description.isNotBlank()) {
+                auditChanges.add(AuditChangeRecord(fieldName = "Description", prevValue = null, newValue = description))
+            }
+            if (selectedSupplier != null) {
+                auditChanges.add(AuditChangeRecord(fieldName = "Supplier", prevValue = null, newValue = selectedSupplier!!.name))
+            }
+            for (v in variants) {
+                val vName = v.variantName.ifBlank { trimmedName }
+                auditChanges.add(AuditChangeRecord(fieldName = "Variant Added", prevValue = null, newValue = vName))
+                auditChanges.add(AuditChangeRecord(fieldName = "Supplier Price ($vName)", prevValue = null, newValue = v.supplierPrice.ifBlank { "0.0" }))
+                auditChanges.add(AuditChangeRecord(fieldName = "Unit ($vName)", prevValue = null, newValue = v.unit.ifBlank { "pcs" }))
+                auditChanges.add(AuditChangeRecord(fieldName = "Selling Price ($vName)", prevValue = null, newValue = v.sellingPrice.ifBlank { "0.0" }))
+                for (cp in v.customPrices) {
+                    if (cp.customer != null && cp.price.isNotBlank()) {
+                        auditChanges.add(AuditChangeRecord(fieldName = "Custom Price ($vName - ${cp.customer.name})", prevValue = null, newValue = cp.price))
+                    }
+                }
+            }
+            val auditTrail = ProductAuditTrailEntity(
+                date = now,
+                userId = userId,
+                productId = productEntity.id,
+                changeDetailsJson = AuditJsonConverter.toJson(auditChanges)
+            )
+            productDao.insertAuditTrail(auditTrail)
 
             ToastHelper.show(getApplication(), "Product saved successfully!", ToastType.SUCCESS)
             clearForm()
