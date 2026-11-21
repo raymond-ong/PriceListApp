@@ -1,6 +1,5 @@
 package com.example.pricelistapp.ui.main
 
-import androidx.compose.animation.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -100,23 +99,7 @@ fun SearchTabContent(
             shape = RoundedCornerShape(12.dp)
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Record count label placed on top of the top paginator
-        val countLabel = if (searchQuery.isBlank()) {
-            "Last $totalRecords modified products"
-        } else {
-            "$totalRecords records found"
-        }
-        Text(
-            text = countLabel,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
-        )
-
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         // Top Paginator (Symmetrical)
         PaginatorBar(
@@ -130,52 +113,55 @@ fun SearchTabContent(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // 2. Search Results List
-        if (paginatedProducts.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
+        // 2. Search Results List (including record count label and bottom paginator inside LazyColumn)
+        LazyColumn(
+            state = listState,
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            contentPadding = PaddingValues(bottom = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            // Record count label placed at the bottom of the top paginator, scrolling together with cards
+            item {
+                val countLabel = if (searchQuery.isBlank()) {
+                    "Last $totalRecords modified products"
+                } else {
+                    "$totalRecords records found"
+                }
                 Text(
-                    text = if (searchQuery.isBlank()) "No recent modified products found." else "No products found matching '$searchQuery'.",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    text = countLabel,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
                 )
             }
-        } else {
-            LazyColumn(
-                state = listState,
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-                contentPadding = PaddingValues(bottom = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
+
+            if (paginatedProducts.isEmpty()) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 32.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = if (searchQuery.isBlank()) "No recent modified products found." else "No products found matching '$searchQuery'.",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            } else {
                 itemsIndexed(paginatedProducts) { index, item ->
                     val globalIndex = (currentPage - 1) * viewModel.pageSize + index + 1
                     ProductCard(index = globalIndex, item = item, onClick = { onProductClick(item) })
                 }
             }
-        }
 
-        val isAtBottom by remember {
-            derivedStateOf {
-                val layoutInfo = listState.layoutInfo
-                val totalItemsCount = layoutInfo.totalItemsCount
-                if (totalItemsCount <= 1) return@derivedStateOf true
-                val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()
-                lastVisibleItem != null && lastVisibleItem.index >= totalItemsCount - 1
-            }
-        }
-
-        AnimatedVisibility(
-            visible = isAtBottom,
-            enter = fadeIn() + expandVertically(),
-            exit = fadeOut() + shrinkVertically()
-        ) {
-            Column {
+            // Bottom Paginator Bar as last item in list
+            item {
                 Spacer(modifier = Modifier.height(4.dp))
                 PaginatorBar(
                     currentPage = currentPage,
@@ -256,12 +242,12 @@ fun ProductCard(index: Int, item: ProductWithVariants, onClick: () -> Unit) {
     val unit = firstVariant?.unit ?: "pcs"
     val variantName = firstVariant?.name
 
-    Card(
+    OutlinedCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surface),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
     ) {
         Box(
             modifier = Modifier

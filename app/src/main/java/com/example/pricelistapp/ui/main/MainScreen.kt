@@ -55,6 +55,7 @@ fun MainScreen(
     var menuExpanded by remember { mutableStateOf(false) }
     var selectedTab by remember { mutableStateOf(MainTab.SEARCH) }
     var selectedProduct by remember { mutableStateOf<ProductWithVariants?>(null) }
+    var isFromSearch by remember { mutableStateOf(false) }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     Scaffold(
@@ -201,7 +202,12 @@ fun MainScreen(
 
                     NavigationBarItem(
                         selected = isSelected,
-                        onClick = { selectedTab = tab },
+                        onClick = {
+                            if (tab == MainTab.PRODUCT) {
+                                isFromSearch = false
+                            }
+                            selectedTab = tab
+                        },
                         colors = NavigationBarItemDefaults.colors(
                             indicatorColor = MaterialTheme.colorScheme.primaryContainer,
                             selectedIconColor = MaterialTheme.colorScheme.primary,
@@ -264,6 +270,7 @@ fun MainScreen(
                             currentRole = currentRole,
                             onProductClick = { product ->
                                 selectedProduct = product
+                                isFromSearch = true
                                 selectedTab = MainTab.PRODUCT
                             }
                         )
@@ -272,6 +279,7 @@ fun MainScreen(
                             user = user,
                             currentRole = currentRole,
                             productWithVariants = selectedProduct,
+                            isFromSearch = isFromSearch,
                             onBackToSearch = { selectedTab = MainTab.SEARCH }
                         )
                         MainTab.ADD -> AddTabContent(user = user, currentRole = currentRole)

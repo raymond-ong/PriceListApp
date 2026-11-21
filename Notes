@@ -201,3 +201,7 @@ e. Product Variant Card List, each card will have the following controls:
  Each list item has the Date on the left with a small caption underneath "By: <user>" then on the next line, show if it's the default selling price, or for which particular customer, then the price on the Right.
  Not sure if all these will fit properly in the UI.
  Remember in the DB schema design I have asked previously, there is a dedicated table for the selling price history.
+
+
+ --- TODO: Audit Trail ---
+ --- TODO: Date Modified ---
