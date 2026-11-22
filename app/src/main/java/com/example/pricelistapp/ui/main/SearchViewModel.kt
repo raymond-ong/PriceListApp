@@ -96,11 +96,11 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
     private fun filterAndSortProducts(query: String) {
         val trimmed = query.trim()
         if (trimmed.isEmpty()) {
-            // If user did not type anything in the Search textbox, show the last 10 products modified.
-            val last10 = allProducts
+            // If user did not type anything in the Search textbox, show the last 20 products modified.
+            val lastN = allProducts
                 .sortedByDescending { it.product.lastModifiedDate }
-                .take(10)
-            _filteredProducts.value = last10
+                .take(20)
+            _filteredProducts.value = lastN
         } else {
             // Fuzzy search with scoring and typo tolerance
             val tokens = trimmed.lowercase().split("\\s+".toRegex()).filter { it.isNotBlank() }

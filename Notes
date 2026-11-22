@@ -235,6 +235,66 @@ Additionally, in the Product's Read Only mode, I forgot to mention previously th
 For the custom price updated by the user in the Edit Mode, a new [customer_price_hist] record in the database must also be added for this variant/customer.
 In Read Only mode, there must also be a similar button for showing the historical prices for the selected variant and customer.
 
+[Audit Trail]
+Next, I want to introduce the concept of Audtit Trail.
+Basically I want to see all the changes made by users on a product.
+For the database, i have come up with a design schema, feel free to update it as necessary.
+* Table name: product_audit_trail
+* Fields:
+- id (ulid)
+- date
+- user
+- product_id
+- change_details (json column to store all changes. This shall be an array of json records)
+
+Fields inside change_details:
+-- variant_id (nullable)
+-- customer_id (nullable)
+-- field_name
+-- prev_value (nullable)
+-- new_value
+
+Basically I want 1 record in [product_audit_trail] for every event.
+E.g. When the user adds a new product, please add 1 record to store all the changes made.
+When the user edits a product, create 1 record in [product_audit_trail] to store all the changes made.
+The Edit logic may need to be updated to able to compare every field that's changed. Please include in the audit trail only the fields that got changed, including price changes.
+In a way, the audit trail table overlaps with the price history tables but it is OK. Please keep the price history tables as it is.
+
+Then, in the Product's ReadOnly View, above the delete button, please add a button "View Change History" and an icon to make it easy to understand.
+When the user clicks on the button, please show a popup window that lists all the changes starting with the last change.
+Please come up with a user friendly UI to show each change. If possible, the old values can be displayed as a striked thrugh value. Then show an arrow icon → as a separator for the old and new value
+
+---
+[9A]
+One more minor UI tweak: I noticed that in the Add Product Tab, the field labels are static.
+In the Product Tab's Edit Mode, the labels are integrated with the control. When the field is initially empty, the label is inside the placeholder text of the control. When the control already has a value, the label shifts to the top of the control. I want this kind of effect on the Add Product page also, rather than static labels.
 
 
---- TODO: Audit Trail ---
+[10] Browse Tab
+Let's Implement the Browse Tab.
+Inside this tab, I want 3 tabs.
+The tabs should be able to scroll sideways in case I add a new tab in the future, but for now I think there is enough space for 3 tabs. Please make the widths of the 3 tabs equal.
+These will be the sub-tabs:
+A. Category
+Please show a seach bar above that will search all categoies using fuzzy search (300ms debounce).
+If no search text is listed, just show the last 20 Categories available in the database.
+
+The search result/lastN Categories shall be displayed in a list/card list that looks similar to the Search page's search results.
+When the user clicks on a category, navigate to a new view/drill down to a new view with a back button that will navigate back to the Category Sub-tab.
+The new View will list all products in the chosen category.
+Please use the same UI as as the Search Page, where in there is a top paginator and a bottom paginator that is at the botoom of the scrollable content (not fixed position). When the user clicks on a particular product, navigate to the Product View. The Product View's back button shall indicate "Category".
+The page size shall be 20.
+
+B. Supplier
+Please show a seach bar above that will search all suppliers using fuzzy search (300ms debounce).
+The search behaviour and search result will be the same as the Category Sub-view.
+However, when the search result is clicked, the drilldown shall display the Supplier info + Products associated with the selected Supplier.
+For the Supplier info, show it in a collapsible view to give the user more screen real estate for the product list below it. 
+For the Products list of the current Supplier, make the behavior and UI same as the Category Sub-View.
+Also, please add an Edit Icon in the Supplier Info to allow the user to edit the Supplier info.
+Just popup a new screen to allow the user to edit the Suplier info available in the DB schema, e.g. address, contact info (text based, not numerical) and notes.
+For the Notes, not sure if you can make it rich text? Such that user can have some basic formatting like colors.
+
+
+C. Customer
+Same behaviour as the Supplier, except use Customer related info.

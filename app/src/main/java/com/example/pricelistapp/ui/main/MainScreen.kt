@@ -55,7 +55,8 @@ fun MainScreen(
     var menuExpanded by remember { mutableStateOf(false) }
     var selectedTab by remember { mutableStateOf(MainTab.SEARCH) }
     var selectedProduct by remember { mutableStateOf<ProductWithVariants?>(null) }
-    var isFromSearch by remember { mutableStateOf(false) }
+    var productBackLabel by remember { mutableStateOf<String?>("Search") }
+    var productBackAction: () -> Unit by remember { mutableStateOf({}) }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     Scaffold(
@@ -203,9 +204,6 @@ fun MainScreen(
                     NavigationBarItem(
                         selected = isSelected,
                         onClick = {
-                            if (tab == MainTab.PRODUCT) {
-                                isFromSearch = false
-                            }
                             selectedTab = tab
                         },
                         colors = NavigationBarItemDefaults.colors(
@@ -270,17 +268,27 @@ fun MainScreen(
                             currentRole = currentRole,
                             onProductClick = { product ->
                                 selectedProduct = product
-                                isFromSearch = true
+                                productBackLabel = "Search"
+                                productBackAction = { selectedTab = MainTab.SEARCH }
                                 selectedTab = MainTab.PRODUCT
                             }
                         )
-                        MainTab.BROWSE -> BrowseTabContent(user = user, currentRole = currentRole)
+                        MainTab.BROWSE -> BrowseTabContent(
+                            user = user,
+                            currentRole = currentRole,
+                            onProductClick = { product, backLabel ->
+                                selectedProduct = product
+                                productBackLabel = backLabel
+                                productBackAction = { selectedTab = MainTab.BROWSE }
+                                selectedTab = MainTab.PRODUCT
+                            }
+                        )
                         MainTab.PRODUCT -> ProductTabContent(
                             user = user,
                             currentRole = currentRole,
                             productWithVariants = selectedProduct,
-                            isFromSearch = isFromSearch,
-                            onBackToSearch = { selectedTab = MainTab.SEARCH },
+                            backButtonLabel = productBackLabel,
+                            onBack = productBackAction,
                             onProductDeleted = { selectedProduct = null }
                         )
                         MainTab.ADD -> AddTabContent(user = user, currentRole = currentRole)
@@ -288,34 +296,6 @@ fun MainScreen(
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun BrowseTabContent(user: User, currentRole: UserRole) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Browse Hierarchy",
-                style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Hierarchical tree table will be displayed here.",
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
-            )
         }
     }
 }

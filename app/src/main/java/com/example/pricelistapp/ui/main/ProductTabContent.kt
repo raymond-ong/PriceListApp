@@ -59,8 +59,8 @@ fun ProductTabContent(
     user: User,
     currentRole: UserRole,
     productWithVariants: ProductWithVariants?,
-    isFromSearch: Boolean,
-    onBackToSearch: () -> Unit,
+    backButtonLabel: String? = "Search",
+    onBack: () -> Unit,
     onProductDeleted: () -> Unit
 ) {
     if (productWithVariants == null) {
@@ -75,8 +75,8 @@ fun ProductTabContent(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                Button(onClick = onBackToSearch) {
-                    Text("Go to Search Tab")
+                Button(onClick = onBack) {
+                    Text("Go Back")
                 }
             }
         }
@@ -191,7 +191,7 @@ fun ProductTabContent(
     val greenColor = Color(0xFF2E7D32)
 
     Column(modifier = Modifier.fillMaxSize()) {
-        if (isFromSearch) {
+        if (backButtonLabel != null) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -199,18 +199,18 @@ fun ProductTabContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 TextButton(
-                    onClick = onBackToSearch,
+                    onClick = onBack,
                     contentPadding = PaddingValues(horizontal = 4.dp)
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back to Search",
+                        contentDescription = "Back",
                         modifier = Modifier.size(20.dp),
                         tint = MaterialTheme.colorScheme.primary
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "Search",
+                        text = backButtonLabel,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
