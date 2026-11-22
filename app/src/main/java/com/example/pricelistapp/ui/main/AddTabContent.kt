@@ -207,6 +207,20 @@ fun AddTabContent(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Initial Notes Textbox
+        OutlinedTextField(
+            value = viewModel.initialNotes,
+            onValueChange = { viewModel.updateInitialNotes(it) },
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text("Initial Notes") },
+            singleLine = false,
+            minLines = 1,
+            maxLines = Int.MAX_VALUE,
+            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
         // 3. Add Variant Link with Green Circular Plus Icon (Left-aligned)
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -265,34 +279,19 @@ fun AddTabContent(
                         keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
                     )
 
-                    Row(
+                    // b. Supplier Price Numeric textbox (2 decimal places)
+                    OutlinedTextField(
+                        value = variant.supplierPrice,
+                        onValueChange = { input ->
+                            if (input.isEmpty() || input.matches(Regex("^\\d*(\\.\\d{0,2})?$"))) {
+                                viewModel.updateVariantSupplierPrice(variant.id, input)
+                            }
+                        },
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        // b. Supplier Price Numeric textbox (2 decimal places)
-                        OutlinedTextField(
-                            value = variant.supplierPrice,
-                            onValueChange = { input ->
-                                if (input.isEmpty() || input.matches(Regex("^\\d*(\\.\\d{0,2})?$"))) {
-                                    viewModel.updateVariantSupplierPrice(variant.id, input)
-                                }
-                            },
-                            modifier = Modifier.weight(1f),
-                            label = { Text("Supplier Price") },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                            singleLine = true
-                        )
-
-                        // c. Unit
-                        OutlinedTextField(
-                            value = variant.unit,
-                            onValueChange = { viewModel.updateVariantUnit(variant.id, it) },
-                            modifier = Modifier.weight(1f),
-                            label = { Text("Unit") },
-                            singleLine = true,
-                            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
-                        )
-                    }
+                        label = { Text("Supplier Price") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                        singleLine = true
+                    )
 
                     // d. Selling Price Numeric textbox (2 decimal places)
                     OutlinedTextField(

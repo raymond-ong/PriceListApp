@@ -242,8 +242,6 @@ fun ProductCard(index: Int, item: ProductWithVariants, onClick: () -> Unit) {
     val firstVariant = item.variants.firstOrNull()
     val supplierPrice = firstVariant?.supplierPrice ?: 0.0
     val sellingPrice = firstVariant?.sellingPrice ?: 0.0
-    val unit = firstVariant?.unit ?: "pcs"
-    val variantName = firstVariant?.name
 
     OutlinedCard(
         modifier = Modifier
@@ -269,15 +267,6 @@ fun ProductCard(index: Int, item: ProductWithVariants, onClick: () -> Unit) {
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
                 )
-
-                if (!variantName.isNullOrBlank() && variantName != product.name) {
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Text(
-                        text = "Variant: $variantName ($unit)",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.secondary
-                    )
-                }
 
                 // b. Product description
                 if (!product.description.isNullOrBlank()) {

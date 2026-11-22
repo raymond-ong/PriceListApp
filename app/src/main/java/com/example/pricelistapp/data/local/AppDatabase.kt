@@ -14,11 +14,12 @@ import androidx.room.RoomDatabase
         CustomerEntity::class,
         ProductEntity::class,
         ProductVariantEntity::class,
+        ProductNoteEntity::class,
         SupplierPriceHistEntity::class,
         CustomerPriceHistEntity::class,
         ProductAuditTrailEntity::class
     ],
-    version = 7,
+    version = 8,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

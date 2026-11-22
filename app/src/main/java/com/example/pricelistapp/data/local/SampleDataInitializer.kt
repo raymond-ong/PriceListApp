@@ -125,7 +125,6 @@ object SampleDataInitializer {
                                 productId = productEntity.id,
                                 name = variantName,
                                 supplierPrice = supplierPrice,
-                                unit = variantName,
                                 sellingPrice = sellingPrice
                             )
                             productDao.insertVariant(variantEntity)

@@ -59,3 +59,12 @@ Fields inside change_details:
 -- field_name
 -- prev_value (nullable)
 -- new_value
+
+
+-----------------------
+[product_notes]
+- id (ulid)
+- product_id
+- notes (text)
+- last_modified_date
+- last_modified_user

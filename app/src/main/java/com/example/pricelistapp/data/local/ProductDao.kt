@@ -66,4 +66,16 @@ interface ProductDao {
 
     @Query("SELECT * FROM product_audit_trail WHERE product_id = :productId ORDER BY date DESC")
     suspend fun getAuditTrailForProduct(productId: String): List<ProductAuditTrailEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertProductNote(note: ProductNoteEntity)
+
+    @Update
+    suspend fun updateProductNote(note: ProductNoteEntity)
+
+    @Query("DELETE FROM product_notes WHERE id = :noteId")
+    suspend fun deleteProductNote(noteId: String)
+
+    @Query("SELECT * FROM product_notes WHERE product_id = :productId ORDER BY last_modified_date DESC")
+    suspend fun getNotesForProduct(productId: String): List<ProductNoteEntity>
 }

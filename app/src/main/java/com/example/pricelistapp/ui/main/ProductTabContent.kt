@@ -49,7 +49,6 @@ data class EditVariantState(
     val variantId: String = "",
     val variantName: String = "",
     val supplierPrice: String = "",
-    val unit: String = "",
     val sellingPrice: String = "",
     val customPrices: List<EditCustomPriceState> = emptyList()
 )
@@ -120,6 +119,21 @@ fun ProductTabContent(
     var selectedSupplierForEdit by remember { mutableStateOf<SupplierEntity?>(null) }
     var editedVariants by remember { mutableStateOf<List<EditVariantState>>(emptyList()) }
 
+    var productNotes by remember { mutableStateOf<List<ProductNoteEntity>>(emptyList()) }
+    LaunchedEffect(currentProduct.id) {
+        withContext(Dispatchers.IO) {
+            val notes = productDao.getNotesForProduct(currentProduct.id)
+            withContext(Dispatchers.Main) {
+                productNotes = notes
+            }
+        }
+    }
+
+    var editedNotes by remember { mutableStateOf<List<ProductNoteEntity>>(emptyList()) }
+    var newNoteText by remember { mutableStateOf("") }
+    var notesExpanded by remember { mutableStateOf(false) }
+    var showAllNotesDialog by remember { mutableStateOf(false) }
+
     var initialEditedName by remember { mutableStateOf("") }
     var initialEditedDescription by remember { mutableStateOf("") }
     var initialSupplierId by remember { mutableStateOf("") }
@@ -132,6 +146,7 @@ fun ProductTabContent(
             editedDescription = currentProduct.description ?: ""
             withContext(Dispatchers.IO) {
                 val sup = productDao.getSupplierById(currentProduct.supplierId)
+                val notes = productDao.getNotesForProduct(currentProduct.id)
                 val vList = currentVariants.map { v ->
                     val custHistList = productDao.getCustomerPriceHistoryForVariant(v.id)
                     val latestCustPrices = mutableMapOf<String, Double>()
@@ -150,7 +165,6 @@ fun ProductTabContent(
                         variantId = v.id,
                         variantName = v.name,
                         supplierPrice = v.supplierPrice.toString(),
-                        unit = v.unit,
                         sellingPrice = v.sellingPrice.toString(),
                         customPrices = cpStates
                     )
@@ -158,6 +172,7 @@ fun ProductTabContent(
                 withContext(Dispatchers.Main) {
                     selectedSupplierForEdit = sup
                     editedVariants = vList
+                    editedNotes = notes
                     initialEditedName = currentProduct.name
                     initialEditedDescription = currentProduct.description ?: ""
                     initialSupplierId = currentProduct.supplierId
@@ -361,6 +376,208 @@ fun ProductTabContent(
                     }
                 }
 
+                // Notes Section
+                if (!isEditing) {
+                    item {
+                        OutlinedCard(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surface),
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "Notes (${productNotes.size})",
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                    if (productNotes.size > 3) {
+                                        TextButton(onClick = { showAllNotesDialog = true }) {
+                                            Text("View all ${productNotes.size} notes")
+                                        }
+                                    }
+                                }
+
+                                if (productNotes.isEmpty()) {
+                                    Text(
+                                        text = "(No notes)",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                } else {
+                                    productNotes.sortedByDescending { it.lastModifiedDate }.take(3).forEach { note ->
+                                        Card(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                                        ) {
+                                            Column(modifier = Modifier.padding(12.dp)) {
+                                                Text(
+                                                    text = note.notes,
+                                                    style = MaterialTheme.typography.bodyMedium,
+                                                    color = MaterialTheme.colorScheme.onSurface
+                                                )
+                                                Spacer(modifier = Modifier.height(4.dp))
+                                                Text(
+                                                    text = "By: ${note.lastModifiedUser} on ${SimpleDateFormat("yyyy-MMM-dd HH:mm", Locale.getDefault()).format(Date(note.lastModifiedDate))}",
+                                                    style = MaterialTheme.typography.bodySmall,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    item {
+                        OutlinedCard(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surface),
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable { notesExpanded = !notesExpanded },
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "Notes (${editedNotes.size})",
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                    IconButton(onClick = { notesExpanded = !notesExpanded }) {
+                                        Icon(
+                                            imageVector = if (notesExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                                            contentDescription = if (notesExpanded) "Collapse Notes" else "Expand Notes"
+                                        )
+                                    }
+                                }
+
+                                if (notesExpanded) {
+                                    HorizontalDivider()
+                                    Spacer(modifier = Modifier.height(4.dp))
+
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                    ) {
+                                        OutlinedTextField(
+                                            value = newNoteText,
+                                            onValueChange = { newNoteText = it },
+                                            label = { Text("Add New Note") },
+                                            modifier = Modifier.weight(1f),
+                                            singleLine = false,
+                                            minLines = 1,
+                                            maxLines = 3,
+                                            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
+                                        )
+                                        Button(
+                                            onClick = {
+                                                if (newNoteText.isNotBlank()) {
+                                                    val newNote = ProductNoteEntity(
+                                                        productId = currentProduct.id,
+                                                        notes = newNoteText.trim(),
+                                                        lastModifiedDate = System.currentTimeMillis(),
+                                                        lastModifiedUser = user.userName
+                                                    )
+                                                    editedNotes = listOf(newNote) + editedNotes
+                                                    newNoteText = ""
+                                                }
+                                            }
+                                        ) {
+                                            Text("Add")
+                                        }
+                                    }
+
+                                    Spacer(modifier = Modifier.height(8.dp))
+
+                                    if (editedNotes.isEmpty()) {
+                                        Text(
+                                            text = "(No notes)",
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    } else {
+                                        editedNotes.forEach { note ->
+                                            Card(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                                            ) {
+                                                Column(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .padding(12.dp),
+                                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                                ) {
+                                                    Row(
+                                                        modifier = Modifier.fillMaxWidth(),
+                                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                                        verticalAlignment = Alignment.CenterVertically
+                                                    ) {
+                                                        Text(
+                                                            text = "By: ${note.lastModifiedUser} on ${SimpleDateFormat("yyyy-MMM-dd HH:mm", Locale.getDefault()).format(Date(note.lastModifiedDate))}",
+                                                            style = MaterialTheme.typography.bodySmall,
+                                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                        )
+                                                        IconButton(
+                                                            onClick = {
+                                                                editedNotes = editedNotes.filter { it.id != note.id }
+                                                            }
+                                                        ) {
+                                                            Icon(Icons.Default.Delete, contentDescription = "Delete Note", tint = MaterialTheme.colorScheme.error)
+                                                        }
+                                                    }
+
+                                                    OutlinedTextField(
+                                                        value = note.notes,
+                                                        onValueChange = { updatedText ->
+                                                            editedNotes = editedNotes.map {
+                                                                if (it.id == note.id) {
+                                                                    it.copy(
+                                                                        notes = updatedText,
+                                                                        lastModifiedDate = System.currentTimeMillis(),
+                                                                        lastModifiedUser = user.userName
+                                                                    )
+                                                                } else it
+                                                            }
+                                                        },
+                                                        modifier = Modifier.fillMaxWidth(),
+                                                        label = { Text("Note") },
+                                                        singleLine = false,
+                                                        minLines = 1,
+                                                        keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
                 // Variants Header & Content
                 item {
                     Row(
@@ -378,30 +595,6 @@ fun ProductTabContent(
                 }
 
                 if (isEditing) {
-                    // Add Variant Button
-                    item {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Start
-                        ) {
-                            TextButton(
-                                onClick = {
-                                    editedVariants = editedVariants + EditVariantState()
-                                },
-                                contentPadding = PaddingValues(horizontal = 0.dp, vertical = 8.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.AddCircle,
-                                    contentDescription = null,
-                                    tint = greenColor,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text("Add Product Variant", color = greenColor, style = MaterialTheme.typography.titleMedium)
-                            }
-                        }
-                    }
-
                     items(editedVariants) { variantState ->
                         Card(
                             modifier = Modifier.fillMaxWidth(),
@@ -443,38 +636,20 @@ fun ProductTabContent(
                                     keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
                                 )
 
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    OutlinedTextField(
-                                        value = variantState.supplierPrice,
-                                        onValueChange = { input ->
-                                            if (input.isEmpty() || input.matches(Regex("^\\d*(\\.\\d{0,2})?$"))) {
-                                                editedVariants = editedVariants.map {
-                                                    if (it.id == variantState.id) it.copy(supplierPrice = input) else it
-                                                }
-                                            }
-                                        },
-                                        modifier = Modifier.weight(1f),
-                                        label = { Text("Supplier Price") },
-                                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                                        singleLine = true
-                                    )
-
-                                    OutlinedTextField(
-                                        value = variantState.unit,
-                                        onValueChange = { unit ->
+                                OutlinedTextField(
+                                    value = variantState.supplierPrice,
+                                    onValueChange = { input ->
+                                        if (input.isEmpty() || input.matches(Regex("^\\d*(\\.\\d{0,2})?$"))) {
                                             editedVariants = editedVariants.map {
-                                                if (it.id == variantState.id) it.copy(unit = unit) else it
+                                                if (it.id == variantState.id) it.copy(supplierPrice = input) else it
                                             }
-                                        },
-                                        modifier = Modifier.weight(1f),
-                                        label = { Text("Unit") },
-                                        singleLine = true,
-                                        keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
-                                    )
-                                }
+                                        }
+                                    },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    label = { Text("Supplier Price") },
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                                    singleLine = true
+                                )
 
                                 OutlinedTextField(
                                     value = variantState.sellingPrice,
@@ -609,6 +784,30 @@ fun ProductTabContent(
                             }
                         }
                     }
+
+                    // Add Variant Button (Placed below variant list)
+                    item {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            TextButton(
+                                onClick = {
+                                    editedVariants = editedVariants + EditVariantState()
+                                },
+                                contentPadding = PaddingValues(horizontal = 0.dp, vertical = 8.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.AddCircle,
+                                    contentDescription = null,
+                                    tint = greenColor,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text("Add Product Variant", color = greenColor, style = MaterialTheme.typography.titleMedium)
+                            }
+                        }
+                    }
                 } else {
                     items(currentVariants) { variant ->
                         VariantDetailCard(
@@ -710,21 +909,46 @@ fun ProductTabContent(
 
                                 val oldSup = productDao.getSupplierById(currentProduct.supplierId)
                                 val oldSupName = oldSup?.name ?: "Unknown"
+                                val oldNotes = productDao.getNotesForProduct(currentProduct.id)
+
+                                val now = System.currentTimeMillis()
 
                                 // Generate audit trail changes before updating
                                 val auditChanges = generateAuditChanges(
                                     oldProduct = currentProduct,
                                     oldVariants = currentVariants,
                                     oldSupplierName = oldSupName,
+                                    oldNotes = oldNotes,
                                     newProductName = trimmedName,
                                     newDescription = editedDescription.trim().ifEmpty { null },
                                     newSupplierId = selectedSupplierForEdit!!.id,
                                     newSupplierName = selectedSupplierForEdit!!.name,
                                     newVariants = editedVariants,
+                                    newNotes = editedNotes,
                                     productDao = productDao
                                 )
 
-                                val now = System.currentTimeMillis()
+                                // Save notes changes
+                                val newNotesMap = editedNotes.associateBy { it.id }
+
+                                for (n in editedNotes) {
+                                    val finalNote = n.copy(
+                                        productId = currentProduct.id,
+                                        lastModifiedDate = now,
+                                        lastModifiedUser = user.userName
+                                    )
+                                    productDao.insertProductNote(finalNote)
+                                }
+                                for (oldN in oldNotes) {
+                                    if (!newNotesMap.containsKey(oldN.id)) {
+                                        productDao.deleteProductNote(oldN.id)
+                                    }
+                                }
+                                val refreshedNotes = productDao.getNotesForProduct(currentProduct.id)
+                                withContext(Dispatchers.Main) {
+                                    productNotes = refreshedNotes
+                                }
+
                                 val updatedProduct = currentProduct.copy(
                                     name = trimmedName,
                                     description = editedDescription.trim().ifEmpty { null },
@@ -754,7 +978,6 @@ fun ProductTabContent(
                                         productId = updatedProduct.id,
                                         name = v.variantName.ifBlank { trimmedName },
                                         supplierPrice = v.supplierPrice.toDoubleOrNull() ?: 0.0,
-                                        unit = v.unit.ifBlank { "pcs" },
                                         sellingPrice = v.sellingPrice.toDoubleOrNull() ?: 0.0
                                     )
                                     productDao.insertVariant(variantEntity)
@@ -1340,17 +1563,56 @@ fun ProductTabContent(
             onDismiss = { showCustomerHistTarget = null }
         )
     }
+
+    // All Notes Dialog Popup
+    if (showAllNotesDialog) {
+        val dateFormat = remember { SimpleDateFormat("yyyy-MMM-dd HH:mm", Locale.getDefault()) }
+        AlertDialog(
+            onDismissRequest = { showAllNotesDialog = false },
+            title = { Text("All Notes (${productNotes.size})") },
+            text = {
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth().height(400.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(productNotes.sortedByDescending { it.lastModifiedDate }) { note ->
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                        ) {
+                            Column(modifier = Modifier.padding(12.dp)) {
+                                Text(text = note.notes, style = MaterialTheme.typography.bodyMedium)
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = "By: ${note.lastModifiedUser} on ${dateFormat.format(Date(note.lastModifiedDate))}",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showAllNotesDialog = false }) {
+                    Text("Close")
+                }
+            }
+        )
+    }
 }
 
 suspend fun generateAuditChanges(
     oldProduct: ProductEntity,
     oldVariants: List<ProductVariantEntity>,
     oldSupplierName: String,
+    oldNotes: List<ProductNoteEntity>,
     newProductName: String,
     newDescription: String?,
     newSupplierId: String,
     newSupplierName: String,
     newVariants: List<EditVariantState>,
+    newNotes: List<ProductNoteEntity>,
     productDao: ProductDao
 ): List<AuditChangeRecord> {
     val changes = mutableListOf<AuditChangeRecord>()
@@ -1369,6 +1631,27 @@ suspend fun generateAuditChanges(
         changes.add(AuditChangeRecord(fieldName = "Supplier", prevValue = oldSupplierName, newValue = newSupplierName))
     }
 
+    val oldNotesMap = oldNotes.associateBy { it.id }
+    val newNotesMap = newNotes.associateBy { it.id }
+
+    for (newN in newNotes) {
+        if (newN.id.isBlank() || !oldNotesMap.containsKey(newN.id)) {
+            if (newN.notes.isNotBlank()) {
+                changes.add(AuditChangeRecord(fieldName = "Note Added", prevValue = null, newValue = newN.notes))
+            }
+        } else {
+            val oldN = oldNotesMap[newN.id]!!
+            if (oldN.notes != newN.notes) {
+                changes.add(AuditChangeRecord(fieldName = "Note Edited", prevValue = oldN.notes, newValue = newN.notes))
+            }
+        }
+    }
+    for (oldN in oldNotes) {
+        if (!newNotesMap.containsKey(oldN.id)) {
+            changes.add(AuditChangeRecord(fieldName = "Note Removed", prevValue = oldN.notes, newValue = null))
+        }
+    }
+
     val oldVariantsMap = oldVariants.associateBy { it.id }
     val handledOldVariantIds = mutableSetOf<String>()
 
@@ -1377,7 +1660,6 @@ suspend fun generateAuditChanges(
             val vName = newV.variantName.ifBlank { newProductName }
             changes.add(AuditChangeRecord(fieldName = "Variant Added", prevValue = null, newValue = vName))
             changes.add(AuditChangeRecord(fieldName = "Supplier Price ($vName)", prevValue = null, newValue = newV.supplierPrice.ifBlank { "0.0" }))
-            changes.add(AuditChangeRecord(fieldName = "Unit ($vName)", prevValue = null, newValue = newV.unit.ifBlank { "pcs" }))
             changes.add(AuditChangeRecord(fieldName = "Selling Price ($vName)", prevValue = null, newValue = newV.sellingPrice.ifBlank { "0.0" }))
             for (cp in newV.customPrices) {
                 if (cp.customer != null && cp.price.isNotBlank()) {
@@ -1395,9 +1677,6 @@ suspend fun generateAuditChanges(
             val newSupPrice = newV.supplierPrice.toDoubleOrNull() ?: 0.0
             if (oldV.supplierPrice != newSupPrice) {
                 changes.add(AuditChangeRecord(variantId = oldV.id, fieldName = "Supplier Price ($vName)", prevValue = oldV.supplierPrice.toString(), newValue = newSupPrice.toString()))
-            }
-            if (oldV.unit != newV.unit) {
-                changes.add(AuditChangeRecord(variantId = oldV.id, fieldName = "Unit ($vName)", prevValue = oldV.unit, newValue = newV.unit))
             }
             val newSellPrice = newV.sellingPrice.toDoubleOrNull() ?: 0.0
             if (oldV.sellingPrice != newSellPrice) {
@@ -1683,17 +1962,6 @@ fun VariantDetailCard(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
                 )
-                Surface(
-                    shape = RoundedCornerShape(8.dp),
-                    color = MaterialTheme.colorScheme.primaryContainer
-                ) {
-                    Text(
-                        text = "Unit: ${variant.unit}",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                    )
-                }
             }
 
             Spacer(modifier = Modifier.height(12.dp))

@@ -298,3 +298,8 @@ For the Notes, not sure if you can make it rich text? Such that user can have so
 
 C. Customer
 Same behaviour as the Supplier, except use Customer related info.
+
+[11] Remove Unit, add Notes for Product
+For the Product (Add Product View, Product Details Page and Product DB Table), I have decided to drop the Units Field. Please make all necessary changes to remove the Units from the UI and DB.
+
+Also, I have decided to add a Notes field for the Product.

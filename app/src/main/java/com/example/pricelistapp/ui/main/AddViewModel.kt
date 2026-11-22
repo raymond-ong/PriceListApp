@@ -23,7 +23,6 @@ data class ProductVariantFormState(
     val id: String = java.util.UUID.randomUUID().toString(),
     val variantName: String = "",
     val supplierPrice: String = "",
-    val unit: String = "",
     val sellingPrice: String = "",
     val customPrices: List<CustomPriceFormState> = emptyList()
 )
@@ -57,6 +56,9 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
     var selectedSupplier by mutableStateOf<SupplierEntity?>(null)
         private set
 
+    var initialNotes by mutableStateOf("")
+        private set
+
     var variants by mutableStateOf<List<ProductVariantFormState>>(emptyList())
         private set
 
@@ -65,6 +67,7 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
         productName = ""
         description = ""
         selectedSupplier = null
+        initialNotes = ""
         variants = emptyList()
     }
 
@@ -84,6 +87,10 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
         selectedSupplier = supplier
     }
 
+    fun updateInitialNotes(notes: String) {
+        initialNotes = notes
+    }
+
     fun addVariant() {
         variants = variants + ProductVariantFormState()
     }
@@ -95,10 +102,6 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
 
     fun updateVariantSupplierPrice(variantId: String, price: String) {
         variants = variants.map { if (it.id == variantId) it.copy(supplierPrice = price) else it }
-    }
-
-    fun updateVariantUnit(variantId: String, unit: String) {
-        variants = variants.map { if (it.id == variantId) it.copy(unit = unit) else it }
     }
 
     fun updateVariantSellingPrice(variantId: String, price: String) {
@@ -232,6 +235,9 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
         }
 
         try {
+            val userObj = productDao.getUserById(userId)
+            val userName = userObj?.userName ?: "Admin"
+
             val productEntity = ProductEntity(
                 name = trimmedName,
                 description = description.ifBlank { null },
@@ -242,12 +248,21 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
             productDao.insertProduct(productEntity)
 
             val now = System.currentTimeMillis()
+            if (initialNotes.isNotBlank()) {
+                val noteEntity = ProductNoteEntity(
+                    productId = productEntity.id,
+                    notes = initialNotes.trim(),
+                    lastModifiedDate = now,
+                    lastModifiedUser = userName
+                )
+                productDao.insertProductNote(noteEntity)
+            }
+
             for (v in variants) {
                 val variantEntity = ProductVariantEntity(
                     productId = productEntity.id,
                     name = v.variantName.ifBlank { trimmedName },
                     supplierPrice = v.supplierPrice.toDoubleOrNull() ?: 0.0,
-                    unit = v.unit.ifBlank { "pcs" },
                     sellingPrice = v.sellingPrice.toDoubleOrNull() ?: 0.0
                 )
                 productDao.insertVariant(variantEntity)
@@ -283,11 +298,13 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
             if (selectedSupplier != null) {
                 auditChanges.add(AuditChangeRecord(fieldName = "Supplier", prevValue = null, newValue = selectedSupplier!!.name))
             }
+            if (initialNotes.isNotBlank()) {
+                auditChanges.add(AuditChangeRecord(fieldName = "Note Added", prevValue = null, newValue = initialNotes.trim()))
+            }
             for (v in variants) {
                 val vName = v.variantName.ifBlank { trimmedName }
                 auditChanges.add(AuditChangeRecord(fieldName = "Variant Added", prevValue = null, newValue = vName))
                 auditChanges.add(AuditChangeRecord(fieldName = "Supplier Price ($vName)", prevValue = null, newValue = v.supplierPrice.ifBlank { "0.0" }))
-                auditChanges.add(AuditChangeRecord(fieldName = "Unit ($vName)", prevValue = null, newValue = v.unit.ifBlank { "pcs" }))
                 auditChanges.add(AuditChangeRecord(fieldName = "Selling Price ($vName)", prevValue = null, newValue = v.sellingPrice.ifBlank { "0.0" }))
                 for (cp in v.customPrices) {
                     if (cp.customer != null && cp.price.isNotBlank()) {

@@ -13,7 +13,6 @@ data class ProductVariantEntity(
     val name: String,
     @ColumnInfo(name = "supplier_price")
     val supplierPrice: Double,
-    val unit: String,
     @ColumnInfo(name = "selling_price")
     val sellingPrice: Double
 )

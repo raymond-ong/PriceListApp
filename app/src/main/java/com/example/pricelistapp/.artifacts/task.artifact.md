@@ -1,0 +1,7 @@
+- [x] Update database entities (`ProductVariantEntity`, create `ProductNoteEntity`, update `AppDatabase`)
+- [x] Update `ProductDao` with methods for product notes
+- [x] SampleDataInitializer updated to remove units
+- [x] Update `AddViewModel` and `AddTabContent` to remove units and support product notes & audit trail
+- [x] Update `ProductTabContent` (Read-Only and Edit modes) to remove units, add notes sections (collapsible in edit mode, latest 3 + popup in read-only), and update audit trail generation
+- [x] Update `SearchTabContent` to remove unit display
+- [x] Build and verify with `gradle_build`
