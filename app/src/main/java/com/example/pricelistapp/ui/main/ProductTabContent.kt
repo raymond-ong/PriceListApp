@@ -1185,8 +1185,8 @@ fun ProductTabContent(
                                 ) {
                                     Text(
                                         text = sup.name,
-                                        modifier = Modifier.padding(14.dp),
-                                        style = MaterialTheme.typography.bodyLarge
+                                        modifier = Modifier.padding(10.dp),
+                                        style = MaterialTheme.typography.bodyMedium
                                     )
                                 }
                             }
@@ -1399,8 +1399,8 @@ fun ProductTabContent(
                                 ) {
                                     Text(
                                         text = cust.name,
-                                        modifier = Modifier.padding(14.dp),
-                                        style = MaterialTheme.typography.bodyLarge
+                                        modifier = Modifier.padding(10.dp),
+                                        style = MaterialTheme.typography.bodyMedium
                                     )
                                 }
                             }

@@ -81,13 +81,13 @@ fun AddTabContent(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 6.dp, vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(horizontal = 6.dp, vertical = 4.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         // Tab Title Area
         Text(
             text = "Add Product",
-            style = MaterialTheme.typography.headlineMedium,
+            style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.primary
         )
 
@@ -205,8 +205,6 @@ fun AddTabContent(
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
         // Initial Notes Textbox
         OutlinedTextField(
             value = viewModel.initialNotes,
@@ -218,28 +216,6 @@ fun AddTabContent(
             maxLines = Int.MAX_VALUE,
             keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
         )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // 3. Add Variant Link with Green Circular Plus Icon (Left-aligned)
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Start
-        ) {
-            TextButton(
-                onClick = { viewModel.addVariant() },
-                contentPadding = PaddingValues(horizontal = 0.dp, vertical = 8.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.AddCircle,
-                    contentDescription = null,
-                    tint = greenColor,
-                    modifier = Modifier.size(20.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Add Product Variant", color = greenColor, style = MaterialTheme.typography.titleMedium)
-            }
-        }
 
         viewModel.variants.forEachIndexed { index, variant ->
             Card(
@@ -409,8 +385,25 @@ fun AddTabContent(
                 }
             }
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
+        // 3. Add Variant Link with Green Circular Plus Icon (Left-aligned)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start
+        ) {
+            TextButton(
+                onClick = { viewModel.addVariant() },
+                contentPadding = PaddingValues(horizontal = 0.dp, vertical = 8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.AddCircle,
+                    contentDescription = null,
+                    tint = greenColor,
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Add Product Variant", color = greenColor, style = MaterialTheme.typography.titleMedium)
+            }
+        }
 
         // 1. Clear and Save Buttons at the bottom (Clear on left, Save on right)
         Row(
@@ -546,8 +539,8 @@ fun AddTabContent(
                                 ) {
                                     Text(
                                         text = cat.name,
-                                        modifier = Modifier.padding(14.dp),
-                                        style = MaterialTheme.typography.bodyLarge
+                                        modifier = Modifier.padding(10.dp),
+                                        style = MaterialTheme.typography.bodyMedium
                                     )
                                 }
                             }
@@ -724,8 +717,8 @@ fun AddTabContent(
                                 ) {
                                     Text(
                                         text = sup.name,
-                                        modifier = Modifier.padding(14.dp),
-                                        style = MaterialTheme.typography.bodyLarge
+                                        modifier = Modifier.padding(10.dp),
+                                        style = MaterialTheme.typography.bodyMedium
                                     )
                                 }
                             }
@@ -909,8 +902,8 @@ fun AddTabContent(
                                 ) {
                                     Text(
                                         text = cust.name,
-                                        modifier = Modifier.padding(14.dp),
-                                        style = MaterialTheme.typography.bodyLarge
+                                        modifier = Modifier.padding(10.dp),
+                                        style = MaterialTheme.typography.bodyMedium
                                     )
                                 }
                             }
